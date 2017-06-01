@@ -9,7 +9,7 @@ db = SQLAlchemy()
 
 
 def create_app(config_name):
-    from api.models import BucketList
+    from app.models import BucketList
 
     app = FlaskAPI(__name__, instance_relative_config=True)
     app.config.from_object(app_config[config_name])
