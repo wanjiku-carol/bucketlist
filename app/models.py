@@ -20,9 +20,9 @@ class BucketList(db.Model):
         db.session.commit()
 
     @staticmethod
-    def get_all(self):
+    def get_all():
         """get all bucketlists in a single querry"""
-        return BucketList.querry.all()
+        return BucketList.query.all()
 
     def delete(self):
         """delete bucketlist from database"""

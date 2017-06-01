@@ -20,14 +20,14 @@ class BucketlistTestCase(unittest.TestCase):
         """Test API can create a bucketlist with a POST request"""
         resp = self.client().post('/bucketlists/', data=self.bucketlist)
         self.assertEqual(resp.status_code, 201)
-        self.assertIn('Rock Climbing', str(resp.data))
+        self.assertIn('Rock Climbing', str(resp.data), msg='Data is okay')
 
     def test_bucketlists_get_all(self):
         """Test API can get a bucketlist with GET request"""
         resp = self.client().post('/bucketlists/', data=self.bucketlist)
         self.assertEqual(resp.status_code, 201)
         resp = self.client().get('/bucketlists/')
-        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.status_code, 201)
         self.assertIn('Rock Climbing', str(resp.data))
 
     def test_bucketlist_get_by_id(self):
