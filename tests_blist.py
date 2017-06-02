@@ -1,6 +1,6 @@
 import unittest
 import os
-import json
+from flask import json
 from app import create_app, db
 
 
@@ -32,11 +32,12 @@ class BucketlistTestCase(unittest.TestCase):
 
     def test_bucketlist_get_by_id(self):
         """Test API can get one bucketlist using it's id."""
-        rv = self.client().post('/bucketlists/', data=self.bucketlist)
-        self.assertEqual(rv.status_code, 201)
-        result_in_json = json.loads(rv.data.decode('utf-8').replace("'", "\""))
+        res = self.client().post('/bucketlists/', data=self.bucketlist)
+        self.assertEqual(res.status_code, 201)
+        result_in_json = json.loads(res.data)
         result = self.client().get(
             '/bucketlists/{}'.format(result_in_json['id']))
+
         self.assertEqual(result.status_code, 200)
         self.assertIn('Rock Climbing', str(result.data))
 
@@ -53,7 +54,7 @@ class BucketlistTestCase(unittest.TestCase):
             })
         self.assertEqual(res.status_code, 200)
         results = self.client().get('/bucketlists/1')
-        self.assertIn('Dont just eat', str(results.data))
+        self.assertIn('Bunjee jumping without socks', str(results.data))
 
     def test_bucketlist_delete(self):
         """Test API can delete an existing bucketlist with DELETE request"""
