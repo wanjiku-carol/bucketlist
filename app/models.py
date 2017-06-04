@@ -1,4 +1,30 @@
+from flask_bcrypt import Bcrypt
+
 from app import db
+
+
+class User(db.Model):
+    """create the user table"""
+
+    __tablename__ = 'users'
+
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), nullable=False, unique=True)
+    email = db.Column(db.String(250), nullable=False, unique=True)
+    password = db.Column(db.String(250), nullable=False)
+    bucketlists = db.relationship(
+        'BucketList', order_by='BucketList.id', cascade="all, delete-orphan")
+
+    def __init__(self, username, email, password):
+        "initialaize user table with username, email, and password"
+        self.username = username
+        self.email = email
+        self.password = Bcrypt().generate_password_hash(password).decode()
+
+    def password_is_valid(self, password):
+        """Checks the password against it's
+        hash to validates the user's password"""
+        return Bcrypt().check_password_hash(self.password, password)
 
 
 class BucketList(db.Model):
@@ -9,20 +35,22 @@ class BucketList(db.Model):
     date_created = db.Column(db.DateTime, default=db.func.current_timestamp())
     date_modified = db.Column(db.DateTime, default=db.func.current_timestamp(),
                               onupdate=db.func.current_timestamp())
+    created_by = db.Column(db.Integer, db.ForeignKey(User.id))
 
-    def __init__(self, name):
+    def __init__(self, name, created_by):
         """initialize with name"""
         self.name = name
+        self.created_by = created_by
 
     def save(self):
-        """add new bucket list to database"""
+        """add new or update existing bucketlist to database"""
         db.session.add(self)
         db.session.commit()
 
     @staticmethod
-    def get_all():
-        """get all bucketlists in a single querry"""
-        return BucketList.query.all()
+    def get_all(user_id):
+        """get all bucketlists for a single user"""
+        return BucketList.query.filter_by(created_by=user_id)
 
     def delete(self):
         """delete bucketlist from database"""
@@ -32,33 +60,3 @@ class BucketList(db.Model):
     def __repr__(self):
         """the object instance of the model whenever it queries"""
         return "<BucketList: {}".format(self.name)
-
-
-class Users(db.Model):
-    """create the user table"""
-
-    __tablename__ = 'users'
-
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), nullable=False, unique=True)
-    email = db.Column(db.String(150), unique=True)
-
-    def __init__(self, username, email):
-        self.username = username
-        self.email = email
-
-    def save(self):
-        db.session.add(self)
-        db.session.commit()
-
-    @staticmethod
-    def get_all(self):
-        return Users.querry.all()
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
-
-    def __repr__(self):
-        """the object instance of the model whenever it queries"""
-        return "<Users: {}".format(self.username)

@@ -1,5 +1,4 @@
 import unittest
-import os
 from flask import json
 from app import create_app, db
 
@@ -27,7 +26,7 @@ class BucketlistTestCase(unittest.TestCase):
         resp = self.client().post('/bucketlists/', data=self.bucketlist)
         self.assertEqual(resp.status_code, 201)
         resp = self.client().get('/bucketlists/')
-        self.assertEqual(resp.status_code, 201)
+        self.assertEqual(resp.status_code, 200)
         self.assertIn('Rock Climbing', str(resp.data))
 
     def test_bucketlist_get_by_id(self):

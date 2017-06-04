@@ -1,4 +1,4 @@
-from flask import request, jsonify, abort, json
+from flask import request, jsonify, abort
 from flask_api import FlaskAPI
 from flask_sqlalchemy import SQLAlchemy
 
@@ -31,8 +31,7 @@ def create_app(config_name):
                     'date_modified': bucketlist.date_modified
                 })
                 response.status_code = 201
-                # import pdb
-                # pdb.set_trace()
+
                 return response
         else:
             bucketlists = BucketList.get_all()
@@ -49,37 +48,37 @@ def create_app(config_name):
                 response.status_code = 200
                 return response
 
-        @app.route('/bucketlists/<int:id>', methods=['GET', 'PUT', 'DELETE'])
-        def bucketlist_edit_item(id, **kwargs):
-            bucketlist = BucketList.query.filter_by(id=id).first()
-            if not bucketlist:
+    @app.route('/bucketlists/<int:id>', methods=['GET', 'PUT', 'DELETE'])
+    def bucketlist_edit_item(id, **kwargs):
+        bucketlist = BucketList.query.filter_by(id=id).first()
+        if not bucketlist:
                 # raise HTTP 404 response if id not found
-                abort(404)
-            if request.method == 'DELETE':
-                bucketlist.delete()
-                return{"message":
-                       "bucketlist {} successfully deleted".format(bucketlist.id)}, 200
-            elif request.method == 'PUT':
-                name = str(request.data.get('name', ''))
-                bucketlist.name = name
-                bucketlist.save()
-                response = jsonify({
-                    'id': bucketlist.id,
-                    'name': bucketlist.name,
-                    'date_created': bucketlist.date_created,
-                    'date_modified': bucketlist.date_modified
-                })
-                response.status_code = 200
-                return response
-            else:
-                # if method is GET return specified bucketlist
-                response = jsonify({
-                    'id': bucketlist.id,
-                    'name': bucketlist.name,
-                    'date_created': bucketlist.date_created,
-                    'date_modified': bucketlist.date_modified
-                })
-                response.status_code = 200
-                return response
+            abort(404)
+        if request.method == 'DELETE':
+            bucketlist.delete()
+            return{"message":
+                   "bucketlist {} successfully deleted".format(bucketlist.id)}, 200
+        elif request.method == 'PUT':
+            name = str(request.data.get('name', ''))
+            bucketlist.name = name
+            bucketlist.save()
+            response = jsonify({
+                'id': bucketlist.id,
+                'name': bucketlist.name,
+                'date_created': bucketlist.date_created,
+                'date_modified': bucketlist.date_modified
+            })
+            response.status_code = 200
+            return response
+        else:
+            # if method is GET return specified bucketlist
+            response = jsonify({
+                'id': bucketlist.id,
+                'name': bucketlist.name,
+                'date_created': bucketlist.date_created,
+                'date_modified': bucketlist.date_modified
+            })
+            response.status_code = 200
+            return response
 
     return app
