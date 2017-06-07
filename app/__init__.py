@@ -1,4 +1,4 @@
-from flask import request, jsonify, abort
+from flask import request, jsonify, abort, make_response
 from flask_api import FlaskAPI
 from flask_sqlalchemy import SQLAlchemy
 
@@ -9,7 +9,7 @@ db = SQLAlchemy()
 
 
 def create_app(config_name):
-    from app.models import BucketList
+    from app.models import BucketList, User
 
     app = FlaskAPI(__name__, instance_relative_config=True)
     app.config.from_object(app_config[config_name])
@@ -19,34 +19,48 @@ def create_app(config_name):
 
     @app.route('/bucketlists/', methods=['POST', 'GET'])
     def bucketlists():
-        if request.method == 'POST':
-            name = str(request.data.get('name', ''))
-            if name:
-                bucketlist = BucketList(name=name)
-                bucketlist.save()
-                response = jsonify({
-                    'id': bucketlist.id,
-                    'name': bucketlist.name,
-                    'date_created': bucketlist.date_created,
-                    'date_modified': bucketlist.date_modified
-                })
-                response.status_code = 201
+        access_token = request.headers.get('Authorization')
+        if access_token:
+            # decode access token to get user id
+            user_id = User.decode_token(access_token)
+            if not isinstance(user_id, str):
+                if request.method == 'POST':
+                    name = str(request.data.get('name', ''))
+                    if name:
+                        bucketlist = BucketList(name=name, created_by=user_id)
+                        bucketlist.save()
+                        response = jsonify({
+                            'id': bucketlist.id,
+                            'name': bucketlist.name,
+                            'date_created': bucketlist.date_created,
+                            'date_modified': bucketlist.date_modified,
+                            'created_by': user_id
+                        })
+                        response.status_code = 201
 
-                return response
-        else:
-            bucketlists = BucketList.get_all()
-            all_bucketlists = []
-            for bucketlist in bucketlists:
-                obj = {
-                    'id': bucketlist.id,
-                    'name': bucketlist.name,
-                    'date_created': bucketlist.date_created,
-                    'date_modified': bucketlist.date_modified
+                        return make_response(response), 201
+                else:
+                    # if method is GET
+                    bucketlists = BucketList.query.filter_by(created_by=user_id)
+                    all_bucketlists = []
+                    for bucketlist in bucketlists:
+                        obj = {
+                            'id': bucketlist.id,
+                            'name': bucketlist.name,
+                            'date_created': bucketlist.date_created,
+                            'date_modified': bucketlist.date_modified,
+                            'created_by': user_id
+                        }
+                        all_bucketlists.append(obj)
+                        response = jsonify(all_bucketlists)
+                        return make_response(response), 200
+            else:
+                # unauthotized user so response becomes payload
+                message = user_id
+                response = {
+                    'message': message
                 }
-                all_bucketlists.append(obj)
-                response = jsonify(all_bucketlists)
-                response.status_code = 200
-                return response
+                return make_response(jsonify(response)), 401
 
     @app.route('/bucketlists/<int:id>', methods=['GET', 'PUT', 'DELETE'])
     def bucketlist_edit_item(id, **kwargs):
