@@ -1,5 +1,5 @@
 import unittest
-from flask import json, make_response, jsonify
+from flask import json
 from app import create_app, db
 
 
@@ -18,19 +18,6 @@ class BucketlistTestCase(unittest.TestCase):
         }
         with self.app.app_context():
             db.create_all()
-
-    #         def register_user(self, username='mango', email='mango@email,com',
-    #                           password='mango_123'):
-    #         """Helper method to register new user"""
-    #
-    #     self.client.post('/auth/register/', data=user_data)
-    #     # import pdb
-    #     # pdb.set_trace()
-    #
-    # def login_user(self, username='mango', email='mango@email,com',
-    #                password='mango_123'):
-    #     """helper method to login registered user"""
-    #     self.client.post('/auth/login/', data=user_data)
 
     def test_bucketlist_create(self):
         """Test API can create a bucketlist with a POST request"""
@@ -102,7 +89,11 @@ class BucketlistTestCase(unittest.TestCase):
             })
 
         self.assertEqual(res.status_code, 200)
-        results = self.client.get('/bucketlists/{}'.format(results['id']))
+        # import pdb
+        # pdb.set_trace()
+        results = self.client.get(
+            '/bucketlists/{}'.format(results['id']),
+            headers=dict(Authorization=access_token))
         self.assertIn('Bunjee jumping without socks', str(results.data))
 
     def test_bucketlist_delete(self):

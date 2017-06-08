@@ -36,7 +36,6 @@ def create_app(config_name):
                             'date_modified': bucketlist.date_modified,
                             'created_by': user_id
                         })
-                        response.status_code = 201
 
                         return make_response(response), 201
                 else:
@@ -49,11 +48,11 @@ def create_app(config_name):
                             'name': bucketlist.name,
                             'date_created': bucketlist.date_created,
                             'date_modified': bucketlist.date_modified,
-                            'created_by': user_id
+                            'created_by': bucketlist.created_by
                         }
                         all_bucketlists.append(obj)
                         response = jsonify(all_bucketlists)
-                        return make_response(response), 200
+                    return make_response(response), 200
             else:
                 # unauthotized user so response becomes payload
                 message = user_id
@@ -64,36 +63,41 @@ def create_app(config_name):
 
     @app.route('/bucketlists/<int:id>', methods=['GET', 'PUT', 'DELETE'])
     def bucketlist_edit_item(id, **kwargs):
-        bucketlist = BucketList.query.filter_by(id=id).first()
-        if not bucketlist:
-                # raise HTTP 404 response if id not found
-            abort(404)
-        if request.method == 'DELETE':
-            bucketlist.delete()
-            return{"message":
-                   "bucketlist {} successfully deleted".format(bucketlist.id)}, 200
-        elif request.method == 'PUT':
-            name = str(request.data.get('name', ''))
-            bucketlist.name = name
-            bucketlist.save()
-            response = jsonify({
-                'id': bucketlist.id,
-                'name': bucketlist.name,
-                'date_created': bucketlist.date_created,
-                'date_modified': bucketlist.date_modified
-            })
-            response.status_code = 200
-            return response
-        else:
-            # if method is GET return specified bucketlist
-            response = jsonify({
-                'id': bucketlist.id,
-                'name': bucketlist.name,
-                'date_created': bucketlist.date_created,
-                'date_modified': bucketlist.date_modified
-            })
-            response.status_code = 200
-            return response
+        access_token = request.headers.get('Authorization')
+        if access_token:
+            user_id = User.decode_token(access_token)
+            if not isinstance(user_id, str):
+                # get the bucketlist specified in url <int:id>
+                bucketlist = BucketList.query.filter_by(id=id).first()
+                if not bucketlist:
+                    # raise HTTP 404 response if id not found
+                    abort(404)
+                if request.method == 'DELETE':
+                    bucketlist.delete()
+                    return{"message":
+                           "bucketlist {} successfully deleted".format(bucketlist.id)}, 200
+                elif request.method == 'PUT':
+                    name = str(request.data.get('name', ''))
+                    bucketlist.name = name
+                    bucketlist.save()
+                    response = jsonify({
+                        'id': bucketlist.id,
+                        'name': bucketlist.name,
+                        'date_created': bucketlist.date_created,
+                        'date_modified': bucketlist.date_modified,
+                        'created_by': bucketlist.created_by
+                    })
+                    return make_response(response), 200
+                else:
+                    # if method is GET return specified bucketlist
+                    response = jsonify({
+                        'id': bucketlist.id,
+                        'name': bucketlist.name,
+                        'date_created': bucketlist.date_created,
+                        'date_modified': bucketlist.date_modified,
+                        'created_by': bucketlist.created_by
+                    })
+                    return make_response(response), 200
     from .auth import auth_blueprint
     app.register_blueprint(auth_blueprint)
 
