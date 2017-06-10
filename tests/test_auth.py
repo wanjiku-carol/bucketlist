@@ -1,25 +1,8 @@
-import unittest
 import json
+from base_test_case import BaseTestCase
 
-from app import db, create_app
 
-
-class TestAuth(unittest.TestCase):
-
-    def setUp(self):
-        """set up variables, environment and create tables"""
-        self.app = create_app(config_name='testing')
-        self.client = self.app.test_client()
-        self.user_data = {
-            'username': 'Yohansen',
-            'email': 'yohansen@testemail.com',
-            'password': 'test_password'
-        }
-
-        with self.app.app_context():
-            db.session.close()
-            db.drop_all()
-            db.create_all()
+class TestAuth(BaseTestCase):
 
     def test_register_new_user(self):
         """test a new user can register"""
@@ -34,7 +17,7 @@ class TestAuth(unittest.TestCase):
         # register user again
         repeat_res = self.client.post('/auth/register/', data=self.user_data)
         # check request has been accepted for processing but has not been processed
-        self.assertEqual(repeat_res.status_code, 202)
+        self.assertEqual(repeat_res.status_code, 409)
         rep_result = json.loads(repeat_res.data.decode())
 
         self.assertEqual(rep_result['message'], "User already exists")

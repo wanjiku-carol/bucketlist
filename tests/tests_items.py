@@ -6,82 +6,80 @@ from base_test_case import BaseTestCase
 class BucketlistTestCase(BaseTestCase):
     """This class represents the bucketlist test case"""
 
-    def test_create_bucketlist(self):
-        """Test API can create a bucketlist with a POST request"""
+    def register_user_and_bucketlist(self):
         self.client.post('/auth/register/', data=self.user_data)
         result = self.client.post('/auth/login/', data=self.user_data)
         # obtain access token
         access_token = json.loads(result.data.decode())['access_token']
-
-        resp = self.client.post(
+        self.client.post(
             '/bucketlists/',
             headers=dict(Authorization=access_token),
             data=self.bucketlist)
-        self.assertEqual(resp.status_code, 201)
-        self.assertIn('Adventures', str(resp.data))
 
-    def test_get_all_bucketlists(self):
-        """Test API can get a bucketlist with GET request"""
+    def test_create_item(self):
+        """Test API can create a bucketlist item with a POST request"""
         self.client.post('/auth/register/', data=self.user_data)
         result = self.client.post('/auth/login/', data=self.user_data)
-        access_token = json.loads(result.data.decode())['access_token']
-
-        resp = self.client.post(
-            '/bucketlists/',
-            headers=dict(Authorization=access_token),
-            data=self.bucketlist)
-        self.assertEqual(resp.status_code, 201)
-        resp = self.client.get(
-            '/bucketlists/',
-            headers=dict(Authorization=access_token))
-        self.assertEqual(resp.status_code, 200)
-        self.assertIn('Adventures', str(resp.data))
-
-    def test_get_buckelist_by_id(self):
-        """Test API can get one bucketlist using it's id."""
-        self.client.post('/auth/register/', data=self.user_data)
-        result = self.client.post('/auth/login/', data=self.user_data)
-
-        access_token = json.loads(result.data.decode())['access_token']
-
-        resp = self.client.post(
-            '/bucketlists/',
-            headers=dict(Authorization=access_token),
-            data=self.bucketlist)
-        self.assertEqual(resp.status_code, 201)
-        result_in_json = json.loads(resp.data)
-        result = self.client.get(
-            '/bucketlists/{}'.format(result_in_json['id']),
-            headers=dict(Authorization=access_token))
-
-        self.assertEqual(result.status_code, 200)
-        self.assertIn('Adventures', str(result.data))
-
-    def test_edit_bucketlist(self):
-        """Test API can edit an existing bucketlist with PUT request"""
-        self.client.post('/auth/register/', data=self.user_data)
-        result = self.client.post('/auth/login/', data=self.user_data)
+        # obtain access token
         access_token = json.loads(result.data.decode())['access_token']
         res = self.client.post(
             '/bucketlists/',
             headers=dict(Authorization=access_token),
-            data={'name': 'Bunjee jumping'})
-        self.assertEqual(res.status_code, 201)
-        results = json.loads(res.data.decode())
+            data=self.bucketlist)
+        bucket_id = json.loads(res.data.decode())
+        # res = self.register_user_and_bucketlist()
+
+        resp_item = self.client.post(
+            'bucketlists/{}/items/'.format(bucket_id['id']),
+            data=self.item)
+        # import pdb
+        # pdb.set_trace()
+        self.assertEqual(resp_item.status_code, 200)
+        self.assertIn('Rock Climbing', str(resp_item.data))
+
+    def test_get_all_items(self):
+        """Test API can get a bucketlist items with GET request"""
+        self.register_user_and_bucketlist()
+        resp_item = self.client.post('/bucketlistitem/', data=self.item)
+        self.assertEqual(resp_item.status_code, 201)
+
+        res = self.client.get('/bucketlistitem/')
+        self.assertEqual(res.status_code, 200)
+        self.assertIn('Rock Climbing', str(resp_item.data))
+
+    def test_get_item_by_id(self):
+        """Test API can get one bucketlist using it's id."""
+        self.register_user_and_bucketlist()
+        resp_item = self.client.post('/bucketlistitem/', data=self.item)
+        self.assertEqual(resp_item.status_code, 201)
+        result_in_json = json.loads(resp_item.data)
+        result = self.client.get(
+            '/bucketlistitem/{}'.format(result_in_json['id']))
+        self.assertEqual(result.status_code, 200)
+        self.assertIn('Rock Climbing', str(result.data))
+
+    def test_edit_item(self):
+        """Test API can edit an existing bucketlist with PUT request"""
+        self.register_user_and_bucketlist()
+        resp_item = self.client.post('/bucketlistitem/', data=self.item)
+        self.assertEqual(resp_item.status_code, 201)
+        self.assertIn('Rock Climbing', str(resp_item.data))
+        results = resp_item.data.decode()
         res = self.client.put(
-            '/bucketlists/{}'.format(results['id']),
-            headers=dict(Authorization=access_token),
+            '/bucketlistitem/{}'.format(results['id']),
             data={
-                "name": "Cooking"
+                "name": "Bunjee jumping without socks"
             })
 
         self.assertEqual(res.status_code, 200)
+        self.assertIn('Bunjee jumping without socks', str(res.data))
+
         results = self.client.get(
             '/bucketlists/{}'.format(results['id']),
             headers=dict(Authorization=access_token))
-        self.assertIn('Cooking', str(results.data))
+        self.assertIn('Bunjee jumping without socks', str(results.data))
 
-    def test_delete_bucketlist(self):
+    def test_bucketlist_delete(self):
         """Test API can delete an existing bucketlist with DELETE request"""
         self.client.post('/auth/register/', data=self.user_data)
         result = self.client.post('/auth/login/', data=self.user_data)
@@ -98,8 +96,10 @@ class BucketlistTestCase(BaseTestCase):
         resp = self.client.delete('/bucketlists/{}'.format(results['id']),
                                   headers=dict(Authorization=access_token))
         self.assertEqual(resp.status_code, 200)
+        import pdb
         response = self.client.get('/bucketlists/{}'.format(results['id']),
                                    headers=dict(Authorization=access_token))
+        # pdb.set_trace()
         self.assertEqual(response.status_code, 404)
 
 

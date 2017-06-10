@@ -1,4 +1,4 @@
-from flask import request, jsonify, abort, make_response
+# from flask import request, jsonify, abort, make_response
 from flask_api import FlaskAPI
 from flask_sqlalchemy import SQLAlchemy
 
@@ -9,7 +9,7 @@ db = SQLAlchemy()
 
 
 def create_app(config_name):
-    from app.models import BucketList, User
+    # from app.models import BucketList, User
 
     app = FlaskAPI(__name__, instance_relative_config=True)
     app.config.from_object(app_config[config_name])
@@ -17,87 +17,6 @@ def create_app(config_name):
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.init_app(app)
 
-    @app.route('/bucketlists/', methods=['POST', 'GET'])
-    def bucketlists():
-        access_token = request.headers.get('Authorization')
-        if access_token:
-            # decode access token to get user id
-            user_id = User.decode_token(access_token)
-            if not isinstance(user_id, str):
-                if request.method == 'POST':
-                    name = str(request.data.get('name', ''))
-                    if name:
-                        bucketlist = BucketList(name=name, created_by=user_id)
-                        bucketlist.save()
-                        response = jsonify({
-                            'id': bucketlist.id,
-                            'name': bucketlist.name,
-                            'date_created': bucketlist.date_created,
-                            'date_modified': bucketlist.date_modified,
-                            'created_by': user_id
-                        })
-
-                        return make_response(response), 201
-                else:
-                    # if method is GET
-                    bucketlists = BucketList.query.filter_by(created_by=user_id)
-                    all_bucketlists = []
-                    for bucketlist in bucketlists:
-                        obj = {
-                            'id': bucketlist.id,
-                            'name': bucketlist.name,
-                            'date_created': bucketlist.date_created,
-                            'date_modified': bucketlist.date_modified,
-                            'created_by': bucketlist.created_by
-                        }
-                        all_bucketlists.append(obj)
-                        response = jsonify(all_bucketlists)
-                    return make_response(response), 200
-            else:
-                # unauthotized user so response becomes payload
-                message = user_id
-                response = {
-                    'message': message
-                }
-                return make_response(jsonify(response)), 401
-
-    @app.route('/bucketlists/<int:id>', methods=['GET', 'PUT', 'DELETE'])
-    def bucketlist_edit_item(id, **kwargs):
-        access_token = request.headers.get('Authorization')
-        if access_token:
-            user_id = User.decode_token(access_token)
-            if not isinstance(user_id, str):
-                # get the bucketlist specified in url <int:id>
-                bucketlist = BucketList.query.filter_by(id=id).first()
-                if not bucketlist:
-                    # raise HTTP 404 response if id not found
-                    abort(404)
-                if request.method == 'DELETE':
-                    bucketlist.delete()
-                    return{"message":
-                           "bucketlist {} successfully deleted".format(bucketlist.id)}, 200
-                elif request.method == 'PUT':
-                    name = str(request.data.get('name', ''))
-                    bucketlist.name = name
-                    bucketlist.save()
-                    response = jsonify({
-                        'id': bucketlist.id,
-                        'name': bucketlist.name,
-                        'date_created': bucketlist.date_created,
-                        'date_modified': bucketlist.date_modified,
-                        'created_by': bucketlist.created_by
-                    })
-                    return make_response(response), 200
-                else:
-                    # if method is GET return specified bucketlist
-                    response = jsonify({
-                        'id': bucketlist.id,
-                        'name': bucketlist.name,
-                        'date_created': bucketlist.date_created,
-                        'date_modified': bucketlist.date_modified,
-                        'created_by': bucketlist.created_by
-                    })
-                    return make_response(response), 200
     from .auth import auth_blueprint
     app.register_blueprint(auth_blueprint)
 

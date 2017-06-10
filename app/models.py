@@ -39,7 +39,7 @@ class User(db.Model):
         try:
             # create payload that expires after 5 minutes
             payload = {
-                'exp': datetime.utcnow() + timedelta(minutes=5),
+                'exp': datetime.utcnow() + timedelta(minutes=60),
                 'iat': datetime.utcnow(),
                 'sub': user_id
             }
@@ -79,6 +79,9 @@ class BucketList(db.Model):
     date_modified = db.Column(db.DateTime, default=db.func.current_timestamp(),
                               onupdate=db.func.current_timestamp())
     created_by = db.Column(db.Integer, db.ForeignKey(User.id))
+    items = db.relationship(
+        'BucketlistItems', order_by='BucketlistItems.id',
+        cascade="all, delete-orphan")
 
     def __init__(self, name, created_by):
         """initialize with name"""
@@ -103,3 +106,37 @@ class BucketList(db.Model):
     def __repr__(self):
         """the object instance of the model whenever it queries"""
         return "<BucketList: {}".format(self.name)
+
+
+class BucketlistItems(db.Model):
+    """create bucketlist item table"""
+    __tablename__ = 'items'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(250), nullable=False)
+    date_created = db.Column(db.DateTime, default=db.func.current_timestamp())
+    date_modified = db.Column(db.DateTime, default=db.func.current_timestamp(),
+                              onupdate=db.func.current_timestamp())
+    done = db.Column(db.Boolean)
+    bucketlist_id = db.Column(db.Integer, db.ForeignKey(BucketList.id))
+
+    def __init__(self, name, bucketlist_id, done):
+        self.name = name
+        self.bucketlist_id = bucketlist_id
+        self.done = done
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    @staticmethod
+    def get_all(bucketlist_id):
+        """get all items in a bucketlist"""
+        return BucketlistItems.query.filter_by(bucketlist_id=bucketlist_id)
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+    def __repr__(self):
+        """the object instance of the model whenever it queries"""
+        return "<Item: {}".format(self.name)
