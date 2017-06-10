@@ -119,10 +119,10 @@ class BucketlistItems(db.Model):
     done = db.Column(db.Boolean)
     bucketlist_id = db.Column(db.Integer, db.ForeignKey(BucketList.id))
 
-    def __init__(self, name, bucketlist_id, done):
+    def __init__(self, name, done, bucketlist_id):
         self.name = name
-        self.bucketlist_id = bucketlist_id
         self.done = done
+        self.bucketlist_id = bucketlist_id
 
     def save(self):
         db.session.add(self)

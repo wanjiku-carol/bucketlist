@@ -164,6 +164,9 @@ class BucketlistView(MethodView):
                                 }
                                 all_bucketlists.append(obj)
                                 response = jsonify(all_bucketlists)
+                        else:
+                            return{"message":
+                                   "No existing bucketlist."}
                     # get the bucketlist specified in url <int:id>
                     else:
                         bucketlist = BucketList.query.filter_by(
@@ -192,34 +195,24 @@ class BucketlistItemView(MethodView):
         """Handles the GET request. Gets all the bucketlists items or
         using item id"""
         try:
-            bucketlist = BucketList.query.filter_by(
-                id=bucketlist_id)
-            if bucketlist:
-                if id is None:
-                    bucketlistitems = BucketlistItems.query.filter_by(
-                        bucketlist_id=bucketlist_id)
-                    all_items = []
-                    for item in bucketlistitems:
-                        obj = {
+            access_token = request.headers.get('Authorization')
+            if access_token:
+                user_id = User.decode_token(access_token)
+                if isinstance(user_id, int):
+                    bucketlist = BucketList.query.filter_by(
+                        id=bucketlist_id).first()
+                    if bucketlist:
+                        bucketlistitems = BucketlistItems.query.filter_by(
+                            id=id).first()
+                        response = jsonify({
                             'id': bucketlistitems.id,
                             'name': bucketlistitems.name,
-                            'date_created': bucketlistitems.created_by,
+                            'date_created': bucketlistitems.date_created,
                             'date_modified': bucketlistitems.date_modified,
-                            'done': bucketlistitems.done
-                        }
-                        all_items.append(obj)
-                        response = jsonify(all_items)
-                else:
-                    bucketlistitems = BucketlistItems.query.filter_by(
-                        id=id)
-                    response = jsonify({
-                        'id': bucketlistitems.id,
-                        'name': bucketlistitems.name,
-                        'date_created': bucketlistitems.date_created,
-                        'date_modified': bucketlistitems.date_modified,
-                        'done': bucketlistitems.done
-                    })
-                return make_response(response), 201
+                            'done': bucketlistitems.done,
+                            'bucketlist_id': bucketlistitems.bucketlist_id
+                        })
+                        return make_response(response), 200
         except Exception as e:
             response = {
                 'message': str(e)
@@ -229,24 +222,29 @@ class BucketlistItemView(MethodView):
     def post(self, bucketlist_id, **kwargs):
         """Handles POST requests for bucketlist id"""
         try:
-            bucketlist = BucketList.query.filter_by(
-                id=bucketlist_id)
-            if bucketlist:
-                name = request.data.get('name', '')
-                done = request.data.get('done', '')
-                bucketlistitem = BucketlistItems(
-                    name=name, bucketlist_id=-bucketlist_id, done=done)
-                bucketlistitem.save()
+            access_token = request.headers.get('Authorization')
+            if access_token:
+                user_id = User.decode_token(access_token)
+                if isinstance(user_id, int):
+                    bucketlist = BucketList.query.filter_by(
+                        id=bucketlist_id).first()
+                    if bucketlist:
+                        name = request.data.get('name', '')
+                        done = request.data.get('done', '')
+                        bucketlistitem = BucketlistItems(
+                            name=name, done=done, bucketlist_id=bucketlist_id)
+                        bucketlistitem.save()
 
-                response = jsonify({
-                    'id': bucketlistitem.id,
-                    'name': bucketlistitem.name,
-                    'date_created': bucketlistitem.date_created,
-                    'date_modified': bucketlistitem.date_modified,
-                    'done': done
-                })
+                        response = jsonify({
+                            'id': bucketlistitem.id,
+                            'name': bucketlistitem.name,
+                            'date_created': bucketlistitem.date_created,
+                            'date_modified': bucketlistitem.date_modified,
+                            'done': bucketlistitem.done,
+                            'bucketlist_id': bucketlistitem.bucketlist_id
+                        })
 
-                return make_response(response), 201
+                        return make_response(response), 201
 
         except Exception as e:
             response = {
@@ -254,29 +252,40 @@ class BucketlistItemView(MethodView):
             }
             return make_response(jsonify(response))
 
-    def delete(self, bucketlist_id, id, **kwargs):
-        """Handles DELETE requests, delete item using item id."""
+    def put(self, id, bucketlist_id, **kwargs):
+        """Handles PUT request to edit an item"""
         try:
-            bucketlist = BucketList.query.filter_by(
-                id=bucketlist_id)
-            if bucketlist:
-                bucketlistitem = BucketlistItems.query.filter_by(id=id)
-                if bucketlistitem:
-                    bucketlist.delete()
-                    return{"message":
-                           "bucketlist {} successfully deleted".format(
-                               bucketlist.id)}, 200
-                else:
-                    return{"message":
-                           "item not found"}, 404
-            else:
-                return{"message":
-                       "Bucketlist not found"}, 404
+            access_token = request.headers.get('Authorization')
+            if access_token:
+                user_id = User.decode_token(access_token)
+                if isinstance(user_id, int):
+                    bucketlist = BucketList.query.filter_by(
+                        id=bucketlist_id).first()
+                    if bucketlist:
+                        bucketlistitem = BucketlistItems.query.filter_by(
+                            id=id).first()
+                        if bucketlistitem:
+                            name = request.data.get('name', '')
+                            done = request.data.get('done', '')
+                            bucketlistitem = BucketlistItems(
+                                name=name, done=done,
+                                bucketlist_id=bucketlist_id)
+                            bucketlistitem.save()
+                            response = jsonify({
+                                'id': bucketlistitem.id,
+                                'name': bucketlistitem.name,
+                                'date_created': bucketlistitem.date_created,
+                                'date_modified': bucketlistitem.date_modified,
+                                'done': bucketlistitem.done,
+                                'bucketlist_id': bucketlistitem.bucketlist_id
+                            })
+
+                            return make_response(response), 201
         except Exception as e:
             response = {
                 'message': str(e)
             }
-            return make_response(jsonify(response)), 500
+            return make_response(jsonify(response))
 
 
 registration_view = RegistrationView.as_view('register_view')
@@ -330,5 +339,5 @@ auth_blueprint.add_url_rule(
 auth_blueprint.add_url_rule(
     '/bucketlists/<int:bucketlist_id>/items/<int:id>',
     view_func=bucketlistitem_view,
-    methods=['DELETE', 'PUT', 'GET']
+    methods=['PUT', 'GET']
 )
