@@ -7,7 +7,8 @@ class BucketList(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(250))
     date_created = db.Column(db.DateTime, default=db.func.current_timestamp())
-    date_modified = db.Column(db.DateTime)
+    date_modified = db.Column(db.DateTime, default=db.func.current_timestamp(),
+                              onupdate=db.func.current_timestamp())
 
     def __init__(self, name):
         """initialize with name"""
@@ -19,9 +20,9 @@ class BucketList(db.Model):
         db.session.commit()
 
     @staticmethod
-    def get_all(self):
+    def get_all():
         """get all bucketlists in a single querry"""
-        return BucketList.querry.all()
+        return BucketList.query.all()
 
     def delete(self):
         """delete bucketlist from database"""
