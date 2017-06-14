@@ -1,11 +1,40 @@
-<html>
-<header>
-<h1>WELCOME TO BUCKET LIST</h1>
-
-</header>
-<body>
-    <table>
-    <th>Login Required</th>
-</table>
-</body>
-</html>
+<div id = "register">
+    <link href='http://127.0.0.1:5000/auth/register' rel='stylesheet' type='text/css'>
+    <div class="container-fluid">
+        <form action="" method="" class="register-form">
+            <div class="row">
+                <div class="col-md-4 col-sm-4 col-lg-4" >
+                    <label for="resp">{{resp}}</label>
+                </div>
+                <div class="col-md-4 col-sm-4 col-lg-4" >
+                    <label for="error">{{errors}}</label>
+                </div>
+                <div class="col-md-4 col-sm-4 col-lg-4">
+                    <label for="username">USERNAME   </label>
+                    <input name="username" class="form-control" type="text" [(ngModel)]="username" autofocus>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 col-sm-4 col-lg-4">
+                    <label for="email">EMAIL</label>
+                    <input name="email" class="form-control" type="email" [(ngModel)]="email" autofocus>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 col-sm-4 col-lg-4">
+                    <label for="password">PASSWORD</label>
+                    <input name="password" class="form-control" type="password"[(ngModel)]="password" autofocus>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-6 col-lg-6">
+                    <button class="btn btn-default regbutton" (click)="registerUser()">Register</button>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6 col-lg-6">
+                    <button class="btn btn-default logbutton" (click)="loginUser()">Log In</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

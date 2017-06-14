@@ -1,7 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpModule } from '@angular/http';
+import { FormsModule }   from '@angular/forms';
 import { RestangularModule, Restangular } from 'ngx-restangular';
+
 
 
 import { AppComponent } from './app.component';
@@ -21,7 +23,10 @@ export function RestangularConfigFactory (RestangularProvider) {
     UsersComponent
   ],
   imports: [
-    BrowserModule, HttpModule, RestangularModule.forRoot(RestangularConfigFactory)
+    BrowserModule,
+    HttpModule,
+    RestangularModule.forRoot(RestangularConfigFactory),
+    FormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

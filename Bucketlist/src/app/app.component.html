@@ -1,4 +1,6 @@
-<div *ngIf="!isLoggedIn">
+<!-- <app-root></app-root> -->
+<app-users *ngIf="!loggedIn">
 <!-- show login/registration form -->
-</div>
+</app-users>
+
 <app-bucketlist *ngIf="isLoggedIn"></app-bucketlist>
