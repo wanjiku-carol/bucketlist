@@ -41,7 +41,7 @@ class BucketlistTestCase(BaseTestCase):
         self.assertEqual(resp_item.status_code, 201)
         result = json.loads(resp_item.data.decode())
         results = self.client.get(
-            'bucketlists/{}/items/{}'.format(bucket_id['id'], result['id']),
+            'bucketlists/{}/items/{}/'.format(bucket_id['id'], result['id']),
             headers=dict(Authorization=access_token))
         self.assertEqual(results.status_code, 200)
 
@@ -63,7 +63,7 @@ class BucketlistTestCase(BaseTestCase):
         self.assertEqual(resp_item.status_code, 201)
         result = json.loads(resp_item.data.decode())
         results = self.client.put(
-            'bucketlists/{}/items/{}'.format(bucket_id['id'], result['id']),
+            'bucketlists/{}/items/{}/'.format(bucket_id['id'], result['id']),
             headers=dict(Authorization=access_token), data={
                 'name': 'Water rafting', 'done': 'True'
             })

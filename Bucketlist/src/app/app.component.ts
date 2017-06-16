@@ -9,6 +9,15 @@ import { Restangular } from 'ngx-restangular';
     styleUrls: ['./app.component.css']
 })
 export class AppComponent{
+    public loggedIn = false;
+
+    constructor() {
+        this.loggedIn = !!localStorage.getItem('auth_token')
+    }
+
+    isLoggedIn() {
+        return this.loggedIn;
+    }
 
     title = 'app';
 }

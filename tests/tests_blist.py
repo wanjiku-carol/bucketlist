@@ -51,7 +51,7 @@ class BucketlistTestCase(BaseTestCase):
         self.assertEqual(resp.status_code, 201)
         result_in_json = json.loads(resp.data)
         result = self.client.get(
-            '/bucketlists/{}'.format(result_in_json['id']),
+            '/bucketlists/{}/'.format(result_in_json['id']),
             headers=dict(Authorization=access_token))
 
         self.assertEqual(result.status_code, 200)
@@ -69,7 +69,7 @@ class BucketlistTestCase(BaseTestCase):
         self.assertEqual(res.status_code, 201)
         results = json.loads(res.data.decode())
         res = self.client.put(
-            '/bucketlists/{}'.format(results['id']),
+            '/bucketlists/{}/'.format(results['id']),
             headers=dict(Authorization=access_token),
             data={
                 "name": "Cooking"
@@ -77,7 +77,7 @@ class BucketlistTestCase(BaseTestCase):
 
         self.assertEqual(res.status_code, 200)
         results = self.client.get(
-            '/bucketlists/{}'.format(results['id']),
+            '/bucketlists/{}/'.format(results['id']),
             headers=dict(Authorization=access_token))
         self.assertIn('Cooking', str(results.data))
 
@@ -95,10 +95,10 @@ class BucketlistTestCase(BaseTestCase):
         results = json.loads(res.data.decode())
         # import pdb
         # pdb.set_trace()
-        resp = self.client.delete('/bucketlists/{}'.format(results['id']),
+        resp = self.client.delete('/bucketlists/{}/'.format(results['id']),
                                   headers=dict(Authorization=access_token))
         self.assertEqual(resp.status_code, 200)
-        response = self.client.get('/bucketlists/{}'.format(results['id']),
+        response = self.client.get('/bucketlists/{}/'.format(results['id']),
                                    headers=dict(Authorization=access_token))
         self.assertEqual(response.status_code, 404)
 

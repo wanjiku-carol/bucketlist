@@ -1,33 +1,9 @@
 from . import auth_blueprint
 from flask.views import MethodView
 from flask import make_response, request, jsonify, abort
-# from functools import wraps
 
 from app.models import User, BucketList, BucketlistItems
-import decorator
-
-
-# def auth_token(func):
-#
-#     @wraps(func)
-#     def decorator(*args, **kwargs):
-#         access_token = request.headers.get("Authorization")
-#         if not access_token:
-#             response = {"message": "Invalid token. Please register or login"}
-#             return make_response(jsonify(response)), 401
-#
-#         if access_token:
-#             # decode token and get the User ID
-#             user_id = User.decode_token(access_token)
-#             if not isinstance(user_id, int):
-#                 message = user_id
-#                 response = {
-#                     "message": message
-#                 }
-#                 return make_response(jsonify(response)), 401
-#
-#         return func(*args, **kwargs)
-#     return decorator
+from app.auth.decorator import auth_token
 
 
 class RegistrationView(MethodView):
@@ -35,7 +11,6 @@ class RegistrationView(MethodView):
 
     def post(self):
         """handle post requests for this view. URL: /auth.register/"""
-
         user = User.query.filter_by(email=request.data.get('email')).first()
 
         if not user:
@@ -95,9 +70,10 @@ class BucketlistView(MethodView):
     """Handles bucketlist creation and manipulation"""
     decorators = [auth_token]
 
-    def post(self):
+    def post(self, **kwargs):
         """Handles POST request for a new bucketlist"""
         try:
+            user_id = kwargs["user_id"]
             name = request.data.get('name', '')
             bucketlist = BucketList(name=name, created_by=user_id)
             bucketlist.save()
@@ -161,6 +137,7 @@ class BucketlistView(MethodView):
     def get(self, id, **kwargs):
         """Handles the GET request. Gets all the bucketlists"""
         try:
+            user_id = kwargs["user_id"]
             limit = request.args.get("limit", 20)
             page = request.args.get("page", 1)
             q = request.args.get("q", None)
@@ -177,7 +154,7 @@ class BucketlistView(MethodView):
                     all_bucketlists = []
                     if bucketlists:
                         bucketlists_pagination = bucketlists.paginate(
-                            page, int(limit), False)
+                            page, int(limit), False).items
                         for bucketlist in bucketlists_pagination:
                             obj = {
                                 'id': bucketlist.id,
@@ -196,8 +173,6 @@ class BucketlistView(MethodView):
                     bucketlist = BucketList.query.filter_by(
                         id=id, created_by=user_id).first()
                     if bucketlist:
-                        bucketlists_pagination = bucketlists.paginate(
-                            page, int(limit), False)
                         response = jsonify({
                             'id': bucketlist.id,
                             'name': bucketlist.name,
@@ -241,7 +216,7 @@ class BucketlistItemView(MethodView):
             }
             return make_response(jsonify(response)), 404
 
-    @decorator.auth_token
+    # @decorator.auth_token
     def post(self, bucketlist_id, **kwargs):
         """Handles POST requests for bucketlist id"""
         try:
@@ -271,7 +246,7 @@ class BucketlistItemView(MethodView):
             }
             return make_response(jsonify(response))
 
-    @decorator.auth_token
+    # @decorator.auth_token
     def put(self, id, bucketlist_id, **kwargs):
         """Handles PUT request to edit an item"""
         try:
@@ -332,12 +307,12 @@ auth_blueprint.add_url_rule(
     methods=['GET']
 )
 auth_blueprint.add_url_rule(
-    '/bucketlists/<int:id>',
+    '/bucketlists/<int:id>/',
     view_func=bucketlist_view,
     methods=['DELETE', 'PUT', 'GET']
 )
 auth_blueprint.add_url_rule(
-    '/bucketlists/<int:bucketlist_id>/items/<int:id>',
+    '/bucketlists/<int:bucketlist_id>/items/<int:id>/',
     view_func=bucketlistitem_view,
     methods=['DELETE', 'PUT', 'GET']
 )
@@ -353,7 +328,7 @@ auth_blueprint.add_url_rule(
     methods=['GET']
 )
 auth_blueprint.add_url_rule(
-    '/bucketlists/<int:bucketlist_id>/items/<int:id>',
+    '/bucketlists/<int:bucketlist_id>/items/<int:id>/',
     view_func=bucketlistitem_view,
     methods=['PUT', 'GET']
 )

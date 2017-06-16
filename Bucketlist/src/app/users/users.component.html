@@ -1,14 +1,21 @@
+<div class="menu">
+    <div class="container-fluid">
+		<div class="navbar-header">
+			<h1><a href="#">BUCKET LIST</a></h1>
+		</div>
+		<div>
+			<ul class="nav navbar-nav navbar-right">
+				<!-- <li><a href="#" ><span class="glyphicon glyphicon-user"></span></a></li> -->
+				<!-- <li><a href="#"><span class="glyphicon glyphicon-log-in"></span></a></li> -->
+			</ul>
+		</div>
+	</div>
+</div>
+
 <div id = "register">
-    <link href='http://127.0.0.1:5000/auth/register' rel='stylesheet' type='text/css'>
     <div class="container-fluid">
         <form action="" method="" class="register-form">
             <div class="row">
-                <div class="col-md-4 col-sm-4 col-lg-4" >
-                    <label for="resp">{{resp}}</label>
-                </div>
-                <div class="col-md-4 col-sm-4 col-lg-4" >
-                    <label for="error">{{errors}}</label>
-                </div>
                 <div class="col-md-4 col-sm-4 col-lg-4">
                     <label for="username">USERNAME   </label>
                     <input name="username" class="form-control" type="text" [(ngModel)]="username" autofocus>

@@ -13,7 +13,7 @@ def auth_token(func):
             response = {"message": "Invalid token. Please register or login"}
             return make_response(jsonify(response)), 401
 
-        if access_token:
+        else:
             # decode token and get the User ID
             user_id = User.decode_token(access_token)
             if not isinstance(user_id, int):
@@ -23,5 +23,6 @@ def auth_token(func):
                 }
                 return make_response(jsonify(response)), 401
 
-        return func(*args, **kwargs)
+        return func(user_id=user_id, *args, **kwargs)
+    print decorator
     return decorator

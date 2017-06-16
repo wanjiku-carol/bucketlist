@@ -6,37 +6,38 @@ import { RestangularModule, Restangular } from 'ngx-restangular';
     selector: 'app-bucketlist',
     templateUrl: './bucketlist.component.html',
     styleUrls: ['./bucketlist.component.css'],
-    // providers: [BucketlistService]
 })
-// export class BucketlistComponent implements OnInit {
-//     private bucketlists;
-//     private activeTasks;
-//
-//     constructor(private bucketlistService: BucketlistService) { }
-//
-//     getBucketlists(){
-//         return this.bucketlistService.get().subscribe(bucketlists => {
-//             console.log(bucketlists);
-//             this.bucketlists = bucketlists;
-//             //   this.activeTasks = this.bucketlists.filter(bucketlist => bucketlist.isDone).length;
-//         });
-//     }
-//
-//     ngOnInit() {
-//         this.getBucketlists();
-//     }
-//
-// }
+export class BucketlistComponent implements OnInit{
+    constructor(private restangular: Restangular) {
+    }
+    bucketlists;
+    name;
+    getBuckelist(){
+        let baseUrl = this.restangular.all('bucketlists');
+        let getBucketlists = baseUrl.getList().subscribe(resp => {
+            this.bucketlists = resp;
+        });
+    }
+    deleteBucketlist(id){
+        let baseUrl = this.restangular.one('bucketlists', id);
+        let deleteBucketlists = baseUrl.remove().subscribe(resp=>{
+            console.log(resp)
+            window.location.reload();
+        });
+    }
+    addBucketlist(){
+        let baseUrl = this.restangular.all('bucketlists');
+        let addBucketlists = baseUrl.post({'name':this.name});
+        window.location.reload();
+    }
+    logout() {
+        localStorage.removeItem('auth_token');
+        window.location.reload();
+    }
 
-export class BucketlistComponent {
-      constructor(private restangular: Restangular) {
-      }
-      bucketlists;
 
-      ngOnInit() {
-        // GET http://api.test.local/v1/users/2/accounts
-        this.bucketlists = this.restangular.all('bucketlists').getList();
+    ngOnInit() {
+        this.getBuckelist();
+    }
 
-        // debugger;
-      }
-  }
+}
