@@ -1,6 +1,5 @@
 import { Component, AfterContentInit, } from '@angular/core';
 import { Http } from '@angular/http';
-import { Restangular } from 'ngx-restangular';
 
 
 @Component({
@@ -10,6 +9,7 @@ import { Restangular } from 'ngx-restangular';
 })
 export class AppComponent{
     public loggedIn = false;
+    public reroute = false;
 
     constructor() {
         this.loggedIn = !!localStorage.getItem('auth_token')
@@ -18,6 +18,12 @@ export class AppComponent{
     isLoggedIn() {
         return this.loggedIn;
     }
+
+    toItems(){
+        this.reroute = true;
+        // window.location.reload();
+    }
+
 
     title = 'app';
 }

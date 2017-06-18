@@ -1,15 +1,15 @@
 <div class="menu">
     <div class="container-fluid">
-		<div class="navbar-header">
-			<a href="#">Bootsnipp</a>
-		</div>
-		<div>
-			<ul class="nav navbar-nav navbar-right">
-				<!-- <li><a href="#" ><span class="glyphicon glyphicon-user"></span> Sign Up</a></li> -->
-				<!-- <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li> -->
-			</ul>
-		</div>
-	</div>
+<div class="navbar-header">
+<a href="">BUCKETLIST</a>
+</div>
+<div>
+<ul class="nav navbar-nav navbar-right">
+<!-- <li><a href="#" ><span class="glyphicon glyphicon-user"></span> Sign Up</a></li> -->
+<!-- <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li> -->
+</ul>
+</div>
+</div>
 </div>
 
 <section class="bucketlistapp">
@@ -26,7 +26,7 @@
       <li *ngFor="let bucketlist of bucketlists" >
         <div class="view">
           <!-- <input class="toggle" type="checkbox" [checked]="bucketlist.isDone"> -->
-          <label>{{ bucketlist.name }}</label>
+          <label><a href="" (click)=toItems()>{{ bucketlist.name }}</a></label>
           <button class="destroy" (click)="deleteBucketlist(bucketlist.id)"></button>
         </div>
         <input class="edit" value="{{ bucketlist.name }}">
@@ -40,14 +40,14 @@
     <!-- Remove this if you don't implement routing -->
     <ul class="filters">
      <li>
-        <a class="selected" href="#/">All</a>
+        <a class="selected" href=""(click)="getBuckelist()">All</a>
       </li>
-      <li>
+      <!-- <li>
         <a href="#/active">Active</a>
       </li>
       <li>
         <a href="#/completed">Completed</a>
-      </li>
+      </li> -->
     </ul>
     <!-- Hidden if no completed items are left ↓ -->
     <button class="clear-completed" (click)="logout()">Log Out</button>

@@ -4,12 +4,14 @@ import { HttpModule } from '@angular/http';
 import { FormsModule }   from '@angular/forms';
 import { RestangularModule, Restangular } from 'ngx-restangular';
 import { RouterModule, Routes } from '@angular/router';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 
 
 import { AppComponent } from './app.component';
 import { BucketlistComponent } from './bucketlist/bucketlist.component';
 import { UsersComponent } from './users/users.component';
+import { ItemsComponent } from './items/items.component';
 
 export function RestangularConfigFactory (RestangularProvider) {
     RestangularProvider.setBaseUrl('http://127.0.0.1:5000/');
@@ -28,13 +30,15 @@ const appRoutes: Routes = [
         AppComponent,
         BucketlistComponent,
         UsersComponent,
+        ItemsComponent,
     ],
     imports: [
         BrowserModule,
         HttpModule,
         RestangularModule.forRoot(RestangularConfigFactory),
         FormsModule,
-        RouterModule.forRoot(appRoutes)
+        RouterModule.forRoot(appRoutes),
+        ModalModule.forRoot()
 
     ],
     providers: [],
