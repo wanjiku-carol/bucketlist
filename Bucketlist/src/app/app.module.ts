@@ -6,8 +6,6 @@ import { RestangularModule, Restangular } from 'ngx-restangular';
 import { RouterModule, Routes } from '@angular/router';
 import { ModalModule } from 'ngx-bootstrap/modal';
 
-
-
 import { AppComponent } from './app.component';
 import { BucketlistComponent } from './bucketlist/bucketlist.component';
 import { UsersComponent } from './users/users.component';
@@ -20,9 +18,10 @@ export function RestangularConfigFactory (RestangularProvider) {
 }
 const appRoutes: Routes = [
   { path: '', component: AppComponent },
-  { path: 'auth/register',component: UsersComponent },
-  { path: 'auth/login',component: UsersComponent },
-  { path: 'bucketlists',component: BucketlistComponent },
+  { path: 'auth/register', component: UsersComponent },
+  { path: 'auth/login', component: UsersComponent },
+  { path: 'bucketlists/:id', component: ItemsComponent },
+  { path: 'bucketlists', component: BucketlistComponent },
   ]
 
 @NgModule({

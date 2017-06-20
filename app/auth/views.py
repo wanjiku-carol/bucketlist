@@ -128,6 +128,11 @@ class BucketlistView(MethodView):
                     'created_by': bucketlist.created_by
                 })
                 return make_response(response), 200
+            else:
+                response = {
+                    "message": "Bucketlist is Empty."
+                }
+                return make_response(jsonify(response))
         except Exception as e:
             response = {
                 'message': str(e)
@@ -167,7 +172,7 @@ class BucketlistView(MethodView):
                             response = jsonify(all_bucketlists)
                     else:
                         return{"message":
-                               "No existing bucketlist."}
+                               "Bucketlist is Empty"}
                 # get the bucketlist specified in url <int:id>
                 else:
                     bucketlist = BucketList.query.filter_by(
@@ -180,6 +185,11 @@ class BucketlistView(MethodView):
                             'date_modified': bucketlist.date_modified,
                             'created_by': bucketlist.created_by
                         })
+                    else:
+                        response = {
+                            "message": "Bucketist is empty"
+                        }
+                        return make_response(jsonify(response)), 409
                 return make_response(response), 200
         except Exception as e:
             response = {
@@ -199,24 +209,52 @@ class BucketlistItemView(MethodView):
             bucketlist = BucketList.query.filter_by(
                 id=bucketlist_id).first()
             if bucketlist:
-                bucketlistitems = BucketlistItems.query.filter_by(
-                    id=id).first()
-                response = jsonify({
-                    'id': bucketlistitems.id,
-                    'name': bucketlistitems.name,
-                    'date_created': bucketlistitems.date_created,
-                    'date_modified': bucketlistitems.date_modified,
-                    'done': bucketlistitems.done,
-                    'bucketlist_id': bucketlistitems.bucketlist_id
-                })
+                if id:
+                    bucketlistitems = BucketlistItems.query.filter_by(
+                        id=id).first()
+                    if bucketlistitems:
+                        response = jsonify({
+                            'id': bucketlistitems.id,
+                            'name': bucketlistitems.name,
+                            'date_created': bucketlistitems.date_created,
+                            'date_modified': bucketlistitems.date_modified,
+                            'done': bucketlistitems.done,
+                            'bucketlist_id': bucketlistitems.bucketlist_id
+                        })
+                    else:
+                        response = {
+                            "message": "Item Not Found"
+                        }
+                        return make_response(jsonify(response)), 409
+                else:
+                    all_items = []
+                    bucketlistitems = BucketlistItems.query.all()
+                    if bucketlistitems:
+                        for item in bucketlistitems:
+                            if item.bucketlist_id == bucketlist_id:
+                                obj = {
+                                    'id': item.id,
+                                    'name': item.name,
+                                    'date_created': item.date_created,
+                                    'date_modified': item.date_modified,
+                                    'done': item.done,
+                                    'bucketlist_id': item.bucketlist_id
+                                }
+                                all_items.append(obj)
+                                response = jsonify(all_items)
+                    else:
+                        return{"message":
+                               "There are no items in bucketlist"}, 404
                 return make_response(response), 200
+            else:
+                return{"message":
+                       "Bucketlist is empty"}, 404
         except Exception as e:
             response = {
                 'message': str(e)
             }
             return make_response(jsonify(response)), 404
 
-    # @decorator.auth_token
     def post(self, bucketlist_id, **kwargs):
         """Handles POST requests for bucketlist id"""
         try:
@@ -225,6 +263,8 @@ class BucketlistItemView(MethodView):
             if bucketlist:
                 name = request.data.get('name', '')
                 done = request.data.get('done', '')
+                if not done:
+                    done = "False",
                 bucketlistitem = BucketlistItems(
                     name=name, done=done, bucketlist_id=bucketlist_id)
                 bucketlistitem.save()
@@ -239,6 +279,11 @@ class BucketlistItemView(MethodView):
                 })
 
                 return make_response(response), 201
+            else:
+                response = {
+                    "message": "Bucketlist is empty"
+                }
+                return make_response(jsonify(response)), 409
 
         except Exception as e:
             response = {
@@ -246,7 +291,6 @@ class BucketlistItemView(MethodView):
             }
             return make_response(jsonify(response))
 
-    # @decorator.auth_token
     def put(self, id, bucketlist_id, **kwargs):
         """Handles PUT request to edit an item"""
         try:
@@ -272,6 +316,16 @@ class BucketlistItemView(MethodView):
                     })
 
                     return make_response(response), 201
+                else:
+                    response = {
+                        "message": "Item does not exist"
+                    }
+                    return make_response(jsonify(response)), 409
+            else:
+                response = {
+                    "message": "Bucketlist is empty"
+                }
+                return make_response(jsonify(response)), 409
         except Exception as e:
             response = {
                 'message': str(e)

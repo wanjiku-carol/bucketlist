@@ -2,13 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { RestangularModule, Restangular } from 'ngx-restangular';
 import { Router } from '@angular/router';
 import { ModalModule } from 'ngx-bootstrap/modal';
-import { ModalService } from '../_services/index';
+// import { ModalService } from '../_services/index';
 
 @Component({
     selector: 'app-bucketlist',
     templateUrl: './bucketlist.component.html',
     styleUrls: ['./bucketlist.component.css'],
-    moduleId: module.id,
+    // moduleId: module.id,
 })
 export class BucketlistComponent implements OnInit{
     constructor(private restangular: Restangular,private router: Router,) {
@@ -16,9 +16,9 @@ export class BucketlistComponent implements OnInit{
     bucketlists;
     name;
     // public reroute = false;
-    getBuckelist(){
+    getBuckelists(){
         let baseUrl = this.restangular.all('bucketlists');
-        let getBucketlists = baseUrl.getList().subscribe(resp => {
+        baseUrl.getList().subscribe(resp => {
             this.bucketlists = resp;
         });
     }
@@ -31,8 +31,10 @@ export class BucketlistComponent implements OnInit{
     }
     addBucketlist(){
         let baseUrl = this.restangular.all('bucketlists');
-        let addBucketlists = baseUrl.post({'name':this.name});
-        window.location.reload();
+        let addBucketlists = baseUrl.post({'name':this.name}).subscribe(resp => {
+            this.getBuckelists();
+            this.name = '';
+        });
     }
     editBucketlist(id){
         let baseUrl = this.restangular.one('bucketlists', id);
@@ -45,9 +47,9 @@ export class BucketlistComponent implements OnInit{
         window.location.reload();
     }
 
-    openModal(id: string){
-        this.modalService.open(id);
-    }
+    // openModal(id: string){
+    //     this.modalService.open(id);
+    // }
 
 
     // toItems(){
@@ -56,7 +58,7 @@ export class BucketlistComponent implements OnInit{
     // }
 
     ngOnInit() {
-        this.getBuckelist();
+        this.getBuckelists();
     }
 
 }

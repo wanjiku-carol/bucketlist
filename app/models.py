@@ -39,7 +39,7 @@ class User(db.Model):
         try:
             # create payload that expires after 5 minutes
             payload = {
-                'exp': datetime.utcnow() + timedelta(minutes=60),
+                'exp': datetime.utcnow() + timedelta(minutes=180),
                 'iat': datetime.utcnow(),
                 'sub': user_id
             }
