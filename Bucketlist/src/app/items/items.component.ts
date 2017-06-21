@@ -15,19 +15,19 @@ export class ItemsComponent{
     bucketlist_id;
     name;
     done;
-    getItems(id){
-        let baseUrl = this.restangular.one('bucketlists', id).all('items');
+    getItems(bucketlist_id){
+        let baseUrl = this.restangular.one('bucketlists', this.bucketlist_id).all('items');
         let getItems = baseUrl.getList().subscribe(resp => {
             this.items = resp;
         });
     }
-
-    // getItem(bucketlist_id, id){
-    //     let baseUrl = this.restangular.one('bucketlists', bucketlist_id).one('items', id);
-    //     let getItem = baseUrl.get().subscribe(resp => {
-    //         this.items = resp;
-    //     });
-    // }
+    deleteItem(id){
+        let baseUrl = this.restangular.one('bucketlists', this.bucketlist_id).one('items', id)
+        let deleteItems = baseUrl.remove().subscribe(resp=>{
+            console.log(resp)
+            window.location.reload();
+        });
+    }
     addItems(){
         let baseUrl = this.restangular.one('bucketlists', this.bucketlist_id).all('items')
         let addItem = baseUrl.post({'name':this.name, 'done': this.done}).subscribe(resp => {
@@ -37,15 +37,24 @@ export class ItemsComponent{
         window.location.reload();
     }
 
-
-        ngOnInit() {
-            this.route.params.subscribe(params => {
-                this.bucketlist_id = +params['id'];
-            })
-
-            this.getItems(this.bucketlist_id);
-            console.log(this.items)
-            console.log("we're here", this.bucketlist_id)
-        }
-
+    editItem(id){
+        let baseUrl = this.restangular.one('bucketlists', this.bucketlist_id).one('item',id);
+        let editItem = baseUrl.put({'name':this.name, 'done': this.done});
+        window.location.reload();
     }
+
+    logout() {
+        localStorage.removeItem('auth_token');
+        window.location.reload();
+    }
+
+
+    ngOnInit() {
+        this.route.params.subscribe(params => {
+            this.bucketlist_id = +params['id'];
+        })
+
+        this.getItems(this.bucketlist_id);
+    }
+
+}

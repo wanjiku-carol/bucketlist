@@ -19,10 +19,6 @@ export class AppComponent implements OnInit{
         return this.loggedIn;
     }
 
-    logout() {
-        localStorage.removeItem('auth_token');
-        window.location.reload();
-    }
 
     ngOnInit() {
         if(window.location.pathname === '/' && this.isLoggedIn()) {

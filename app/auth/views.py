@@ -75,17 +75,21 @@ class BucketlistView(MethodView):
         try:
             user_id = kwargs["user_id"]
             name = request.data.get('name', '')
-            bucketlist = BucketList(name=name, created_by=user_id)
-            bucketlist.save()
-            response = jsonify({
-                'id': bucketlist.id,
-                'name': bucketlist.name,
-                'date_created': bucketlist.date_created,
-                'date_modified': bucketlist.date_modified,
-                'created_by': user_id
-            })
-
-            return make_response(response), 201
+            if name:
+                bucketlist = BucketList(name=name, created_by=user_id)
+                bucketlist.save()
+                response = jsonify({
+                    'id': bucketlist.id,
+                    'name': bucketlist.name,
+                    'date_created': bucketlist.date_created,
+                    'date_modified': bucketlist.date_modified,
+                    'created_by': user_id
+                })
+                return make_response(response), 201
+            else:
+                response = {
+                    "message": "Please enter a bucketlist name."
+                }
         except Exception as e:
             response = {
                 'message': str(e)
@@ -189,7 +193,7 @@ class BucketlistView(MethodView):
                         response = {
                             "message": "Bucketist is empty"
                         }
-                        return make_response(jsonify(response)), 409
+                        return make_response(jsonify(response))
                 return make_response(response), 200
         except Exception as e:
             response = {
@@ -225,7 +229,7 @@ class BucketlistItemView(MethodView):
                         response = {
                             "message": "Item Not Found"
                         }
-                        return make_response(jsonify(response)), 409
+                        return make_response(jsonify(response))
                 else:
                     all_items = []
                     bucketlistitems = BucketlistItems.query.all()
@@ -283,7 +287,7 @@ class BucketlistItemView(MethodView):
                 response = {
                     "message": "Bucketlist is empty"
                 }
-                return make_response(jsonify(response)), 409
+                return make_response(jsonify(response))
 
         except Exception as e:
             response = {
@@ -320,17 +324,43 @@ class BucketlistItemView(MethodView):
                     response = {
                         "message": "Item does not exist"
                     }
-                    return make_response(jsonify(response)), 409
+                    return make_response(jsonify(response))
             else:
                 response = {
                     "message": "Bucketlist is empty"
                 }
-                return make_response(jsonify(response)), 409
+                return make_response(jsonify(response))
         except Exception as e:
             response = {
                 'message': str(e)
             }
             return make_response(jsonify(response))
+
+    def delete(self, bucketlist_id, id, **kwargs):
+        """Handles DELETE request to delete a bucketlist item"""
+        try:
+            bucketlist = BucketList.query.filter_by(id=bucketlist_id).first()
+            if not bucketlist:
+                abort(404)
+            else:
+                if id:
+                    bucketlistitems = BucketlistItems.query.filter_by(
+                        id=id).first()
+                    if bucketlistitems:
+                        bucketlistitems.delete()
+                        return{"message":
+                               "item {} successfully deleted".format(
+                                   bucketlist.id)}, 200
+                    else:
+                        response = {
+                            "message": "Item not found"
+                        }
+                        return make_response(jsonify(response))
+        except Exception as e:
+            response = {
+                'message': str(e)
+            }
+            return make_response(jsonify(response)), 500
 
 
 registration_view = RegistrationView.as_view('register_view')

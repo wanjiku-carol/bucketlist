@@ -1,33 +1,62 @@
 <section id="contact">
     <div class="section-content">
-        <button class="clear-completed" (click)="logout()">Log Out</button>
         <h1 class="section-header">Bucket List<span class="content-header wow fadeIn " data-wow-delay="0.2s" data-wow-duration="2s"> App</span></h1>
         <h3>Do Everything You Always Wanted To Do</h3>
     </div>
+    <table>
+        <tr>
+            <td>
+                <div class="col-md-6">
+                    <button type="button" class="btn btn-default" (click)="logout()">Log Out</button>
+                </div>
+            </td>
+        </tr>
+
+    </table>
     <div class="contact-section">
         <div class="container">
             <form>
-                <div class="col-md-6 form-line">
+                <div class="col-md-12 form-line">
                     <div class="form-group">
                         <label for="username">Add New Bucketlist</label>
                         <input name="name" type="text" class="form-control" id=""  placeholder=" Enter Bucketlist Name" [(ngModel)]="name">
                     </div>
-                    <div>
-                        <button type="button" (click) ="addBucketlist()"  class="btn btn-default submit"><i class="fa fa-paper-plane" aria-hidden="true"></i>Add Bucketlist</button>
-                    </div>
+                    <table>
+                        <tr>
+                            <td>
+                                <div>
+                                    <button type="button" *ngIf="!edit" (click) ="addBucketlist()"  class="btn btn-default submit"><i class="fa fa-paper-plane" aria-hidden="true"></i>Add Bucketlist</button>
+                                </div>
+                            </td>
+                            <td>
+                                <div>
+                                    <button type="button" *ngIf="edit" (click) ="saveBucketlist()"  class="btn btn-default submit"><i class="fa fa-paper-plane" aria-hidden="true"></i>Save Change</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
             </form>
             <form>
                 <div class="col-md-6 form-line">
+                    <h4>Click on bucketlist to view items</h4>
                     <div class="form-group"  *ngFor="let bucketlist of bucketlists">
-                        <label for="username"><a href="bucketlists/{{ bucketlist.id}}">{{ bucketlist.name }}</a></label>
-                        <button type="button" (click) ="loginUser()" class="btn btn-default submit"><i class="fa fa-paper-plane" aria-hidden="true"></i>Edit</button>
+                        <label for="name"><a href="bucketlists/{{ bucketlist.id}}">{{ bucketlist.name }}</a></label>
+                        <button type="button" (click) ="editBucketlist(bucketlist.id)" class="btn btn-default submit"><i class="fa fa-paper-plane" aria-hidden="true"></i>Edit</button>
                         <button type="button" (click) ="deleteBucketlist(bucketlist.id)" class="btn btn-default submit"><i class="fa fa-paper-plane" aria-hidden="true"></i>Delete</button>
                     </div>
+
                 </div>
             </form>
 
         </div>
+    </div>
+
+    <div>
+        <label for="resp">{{ resp }}</label>
+    </div>
+    <div>
+        <label for="err">{{ err }}</label>
     </div>
 
 </section>

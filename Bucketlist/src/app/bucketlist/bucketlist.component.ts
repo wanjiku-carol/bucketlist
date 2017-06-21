@@ -14,7 +14,9 @@ export class BucketlistComponent implements OnInit{
     constructor(private restangular: Restangular,private router: Router,) {
     }
     bucketlists;
+    current_bucketlist;
     name;
+    edit = false;
     // public reroute = false;
     getBuckelists(){
         let baseUrl = this.restangular.all('bucketlists');
@@ -37,9 +39,23 @@ export class BucketlistComponent implements OnInit{
         });
     }
     editBucketlist(id){
-        let baseUrl = this.restangular.one('bucketlists', id);
-        let addBucketlists = baseUrl.put({'name':this.name});
-        window.location.reload();
+        this.edit = true;
+        this.current_bucketlist = this.restangular.one('bucketlists', id);
+        this.current_bucketlist.get().subscribe(resp => {
+            this.name = resp.name;
+        });
+        // window.location.reload();
+    }
+    saveBucketlist(){
+        this.current_bucketlist.name = this.name
+        let editBucketlists = this.current_bucketlist.put().subscribe(resp => {
+            this.getBuckelists();
+            this.name = '';
+            this.edit = false;
+        }, function(err) {
+            // console.log(err)
+
+        });;
     }
 
     logout() {
@@ -47,15 +63,6 @@ export class BucketlistComponent implements OnInit{
         window.location.reload();
     }
 
-    // openModal(id: string){
-    //     this.modalService.open(id);
-    // }
-
-
-    // toItems(){
-    //     this.reroute = true;
-    //     // window.location.reload();
-    // }
 
     ngOnInit() {
         this.getBuckelists();

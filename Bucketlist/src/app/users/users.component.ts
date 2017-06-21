@@ -30,8 +30,8 @@ export class UsersComponent  implements OnInit{
         let addAccount = baseUrl.post(
             { 'username': this.reg_username, 'email': this.reg_email, 'password':this.reg_password }
         ).subscribe(resp => {
-            console.log(this.resp=resp.message);
-        }, function(err){console.log(this.error=err.data.message);
+            alert(this.resp=resp.message);
+        }, function(err){alert(this.error=err.data.message);
         })
     }
     ngOnInit() {
@@ -41,15 +41,12 @@ export class UsersComponent  implements OnInit{
         let baseUrl = this.restangular.all('auth/login');
         let addAccount = baseUrl.post({'email':this.login_email,'password':this.login_password})
         .subscribe(resp => {
-            console.log("login successful", resp);
-            console.log(this.resp=resp.message)
+            alert(this.resp=resp.message)
             localStorage.setItem('auth_token', resp.access_token);
             this.auth_token = resp.access_token;
-            // this.loggedIn = true;
-            // this.router.navigate(['/'])
             window.location.reload();
         }, function(err) {
-            console.log(this.error=err.data.message);
+            alert(this.error=err.data.message);
 
         });
     }

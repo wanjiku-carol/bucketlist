@@ -8,10 +8,11 @@
             <td><div class="col-md-6">
                 <button type="button" class="btn btn-default"><a href="/bucketlists">Back to Bucketlists</a></button>
             </div></td>
-            <td> <form action="" method="" class="register-form">
-                <input name="search" class="new-item" type="text" [(ngModel)]="id" placeholder="Search by Item ID" autofocus>
-                <button type="button" class="btn btn-default" (click)="getItem()"> Search Item</button>
-            </form></td>
+            <td>
+                <div class="col-md-6">
+                    <button type="button" class="btn btn-default" (click)="logout()">Log Out</button>
+                </div>
+            </td>
         </tr>
 
     </table>
@@ -44,6 +45,7 @@
                         <h5 class="media-heading">Date Created: {{item.date_created}}</h5>
                         <h5 class="media-heading">Date Modified: {{item.date_modified}}</h5>
                         <h5 class="media-heading">Done: {{item.done}}</h5>
+                        <button type="button" class="btn btn-default" (click)="deleteItem(item.id)"> Delete Item</button>
                     </div>
 
                     <!-- <button type="button" (click) ="editItem()" class="btn btn-default submit"><i class="fa fa-paper-plane" aria-hidden="true"></i>Edit</button> -->
