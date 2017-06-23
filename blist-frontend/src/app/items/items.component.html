@@ -1,0 +1,86 @@
+<section id="testimonial" class="sections lightbg">
+    <div class="container text-center">
+
+        <div class="heading-content">
+            <h3>Items in: {{ current_bucketlist }}</h3>
+        </div>
+
+        <!-- Example row of columns -->
+        <div class="jumbotron col-md-offset-4 col-md-4">
+            <form class="register-form">
+                <div class="form-group">
+                    <input name="name" *ngIf="!edit" type="text" class="form-control" (keyup.enter)="addItems()" placeholder="Enter Item Name and Press Enter" [(ngModel)]="name">
+                </div>
+                <!-- <div class="form-group">
+                    <label for="done">Done</label>
+                    <input name="done" default="False" type="checkbox" [(ngModel)]="done">
+                </div> -->
+            </form>
+        </div>
+        <div id="editModal" *ngIf="edit">
+            <div role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title"></h4>
+                        </div>
+                        <div class="modal-body">
+                            <input name="name" type="text" class="form-control" (keyup.enter)="saveItem()" [(ngModel)]="name">
+                        </div>
+                        <div class="form-group">
+                            <label for="done">Done</label>
+                            <input name="done"  type="checkbox" [(ngModel)]="done">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" (click)="saveItem()">Save</button>
+                            <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="row col-md-12">
+
+            <div class="col-md-8 col-md-offset-2 col-sm-12 col-xs-12">
+
+                <div id="carousel-example-generic" class="carousel slide" data-ride="carousel" data-interval="false">
+                    <div class="carousel-inner" role="listbox"  *ngFor="let item of items| paginate: {itemsPerPage: 5, currentPage:page, id: '1'};">
+
+                        <div class="item active">
+
+                            <div class="col-md-4">
+                                <div class="testimonial-photo">
+                                    <img src="assets/images/gallery/2.png" alt="" />
+                                </div>
+                            </div>
+
+                            <div class="col-md-8">
+                                <div class="testimonial-content">
+                                    <h3> Item Name: {{item.name}}</h3>
+                                    <!-- <input name="edit-item" type="text" class="form-control" *ngIf="!editItem()" (keyup.enter)="saveItem()"> -->
+                                    <h6><strong>Date Created: {{item.date_created |  amDateFormat:'LL'}} <br />Date Modified: {{item.date_modified |  amDateFormat:'LL'}}<br />Done: {{item.done ? 'Yes' : 'No'}}</strong></h6>
+                                    <button type="button" (click)="deleteItem(item.id)"> Delete Item</button>
+                                    <button type="button" (click)="editItem(item.id)"> Edit Item</button>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+                <pagination-controls (pageChange)="page = $event" id="1"
+                      maxSize="5"
+                      directionLinks="true"
+                      autoHide="true">
+                </pagination-controls>
+            </div>
+        </div>
+    </div>
+    <!-- /container -->
+</section>
