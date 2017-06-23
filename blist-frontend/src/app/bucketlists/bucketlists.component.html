@@ -8,11 +8,11 @@
             <!-- <h5>summarise what your product is all about </h5> -->
         </div>
         <form>
-            <div class="col-md-offset-4 col-md-4 form-group">
+            <div class="col-md-offset-2 col-md-3 form-group">
                 <input *ngIf="!edit" name="name" type="text" class="form-control" id=""  placeholder="Enter New Bucketlist Name and Press Enter" (keyup.enter)="addBucketlist()" [(ngModel)]="name">
             </div>
         </form>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div id="custom-search-input">
                 <div class="input-group col-md-12">
                     <input name="search_phrase" [(ngModel)]="search_phrase" type="text" class="form-control input-lg" placeholder="Search Bucketlist" />
@@ -39,18 +39,19 @@
                                 <input name="name" type="text" class="form-control" (keyup.enter)="saveBucketlist()" [(ngModel)]="name">
                             </div>
                             <!-- <div class="form-group">
-                                <label for="done">Done</label>
-                                <input name="done" default="False" type="checkbox" [(ngModel)]="done">
-                            </div> -->
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-primary" (click)="saveBucketlist()">Save</button>
-                                <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
-                            </div>
+                            <label for="done">Done</label>
+                            <input name="done" default="False" type="checkbox" [(ngModel)]="done">
+                        </div> -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" (click)="saveBucketlist()">Save</button>
+                            <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
                         </div>
-
                     </div>
+
                 </div>
             </div>
+        </div>
+        <div *ngIf="bucketlists">
             <div class="col-md-3 col-sm-6 col-xs-12" *ngFor="let bucketlist of bucketlists| paginate: {itemsPerPage: 5, currentPage:page, id: '1'};">
                 <div class="gallery-item">
                     <div class="gallery">
@@ -70,13 +71,20 @@
 
                 </div>
             </div>
-
-
         </div>
-        <pagination-controls (pageChange)="page = $event" id="1"
-              maxSize="5"
-              directionLinks="true"
-              autoHide="true">
-        </pagination-controls>
-    </div> <!-- /container -->
+        <div *ngIf="!bucketlists">
+            <h2>You do not have any bucketlists</h2>
+        </div>
+        <!-- <div *ngIf="!bucketlists">
+        <h2>You do not have any bucketlists</h2>
+    </div> -->
+
+
+</div>
+<pagination-controls (pageChange)="page = $event" id="1"
+maxSize="5"
+directionLinks="true"
+autoHide="true">
+</pagination-controls>
+</div> <!-- /container -->
 </section>

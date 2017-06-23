@@ -14,6 +14,8 @@ export class AppComponent implements OnInit{
     public showHeader = true;
     public showLogin = false;
     public showRegister = false;
+    public loginError;
+    public registerError;
     login_password;
     login_email;
     auth_token;
@@ -29,12 +31,12 @@ export class AppComponent implements OnInit{
         let baseUrl = this.restangular.all('auth/login');
         let addAccount = baseUrl.post({'email':this.login_email,'password':this.login_password})
         .subscribe(resp => {
-            alert(this.resp=resp.message)
             localStorage.setItem('auth_token', resp.access_token);
             this.auth_token = resp.access_token;
             window.location.reload();
-        }, function(err) {
-            alert(this.error=err.data.message);
+        }, err => {
+            console.log(err.data.message)
+            this.loginError = err.data.message;
 
         });
     }
@@ -44,7 +46,9 @@ export class AppComponent implements OnInit{
             { 'username': this.reg_username, 'email': this.reg_email, 'password':this.reg_password }
         ).subscribe(resp => {
             alert(this.resp=resp.message);
-        }, function(err){alert(this.error=err.data.message);
+        }, err => {
+            console.log(err.data.message)
+            this.registerError = err.data.message;
         })
     }
     isLoggedIn() {

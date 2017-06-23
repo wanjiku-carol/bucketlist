@@ -7,7 +7,7 @@
 
 
         <!-- Example row of columns -->
-        
+
         <div class="jumbotron col-md-offset-4 col-md-4">
             <form class="register-form">
                 <div class="form-group">
@@ -48,7 +48,7 @@
 
             <div class="col-md-8 col-md-offset-2 col-sm-12 col-xs-12">
 
-                <div id="carousel-example-generic" class="carousel slide" data-ride="carousel" data-interval="false">
+                <div id="carousel-example-generic" *ngIf="items" class="carousel slide" data-ride="carousel" data-interval="false">
                     <div class="carousel-inner" role="listbox"  *ngFor="let item of items| paginate: {itemsPerPage: 5, currentPage:page, id: '1'};">
 
                         <div class="item active">
@@ -75,6 +75,9 @@
                     </div>
 
 
+                </div>
+                <div *ngIf="!items">
+                    <h2>There are no items in this bucketlist</h2>
                 </div>
                 <pagination-controls (pageChange)="page = $event" id="1"
                       maxSize="5"
