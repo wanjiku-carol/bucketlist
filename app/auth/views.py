@@ -118,7 +118,7 @@ class BucketlistView(MethodView):
     def put(self, id, **kwargs):
         """Handles the PUT request to edit bucketlist"""
         try:
-            # user_id = kwargs["user_id"]
+
             bucketlist = BucketList.query.filter_by(id=id).first()
             if bucketlist:
                 name = str(request.data.get('name', ''))
@@ -306,9 +306,8 @@ class BucketlistItemView(MethodView):
                 if bucketlistitem:
                     name = request.data.get('name', '')
                     done = request.data.get('done', '')
-                    bucketlistitem = BucketlistItems(
-                        name=name, done=done,
-                        bucketlist_id=bucketlist_id)
+                    bucketlistitem.name = name
+                    bucketlistitem.done = done
                     bucketlistitem.save()
                     response = jsonify({
                         'id': bucketlistitem.id,
