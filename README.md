@@ -4,16 +4,18 @@ According to Merriam-Webster Dictionary, a Bucket List is a list of things that 
 
 ## Installation and Setup
 
->Clone the repo
+Clone the repo
+>git clone https://github.com/wanjiku-carol/bucketlist.git
 
-https://github.com/r-wambui/bucket_list.git
 Navigate to the root folder
 
 >cd bucketlist
->Install the requirements
+
+Install the requirements
 
 >pip install -r requirements.txt
->Initialize, migrate, upgrade the datatbase
+
+Initialize, migrate, upgrade the datatbase
 
 >python manage.py db init
 >python manage.py db migrate
@@ -23,7 +25,7 @@ Navigate to the root folder
 
 Run
 
->python run.py
+>python run.py development
 
 Interact with the API, send http requests using Postman
 
@@ -66,4 +68,4 @@ Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.
 ## Running end-to-end tests
 
 Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-Before running the tests make sure you are serving the app via `ng serve`.
+Before running the tests make sure you are serving the app via `ng serve --port 9000`.
