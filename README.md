@@ -9,7 +9,7 @@ According to Merriam-Webster Dictionary, a Bucket List is a list of things that 
 https://github.com/r-wambui/bucket_list.git
 Navigate to the root folder
 
->cd bucket_list
+>cd bucketlist
 >Install the requirements
 
 >pip install -r requirements.txt
@@ -46,6 +46,8 @@ Interact with the API, send http requests using Postman
 # Bucket List Front End
 
 ## Development server
+
+Run `ng install` to install the dependencies.
 
 Run `ng serve --port 9000` for a dev server. Navigate to `http://localhost:9000/`. The app will automatically reload if you change any of the source files.
 

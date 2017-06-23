@@ -149,52 +149,51 @@ class BucketlistView(MethodView):
             user_id = kwargs["user_id"]
             limit = request.args.get("limit", 20)
             page = request.args.get("page", 1)
-            q = request.args.get("q", None)
+            search_term = request.args.get("q", None)
             limit = 100 if int(limit) > 100 else int(limit)
-
-            if q:
+            if search_term:
                 bucketlists = BucketList.query.filter(
-                    BucketList.name.ilike("%" + q + "%")).filter_by(
+                    BucketList.name.ilike("%" + search_term + "%")).filter_by(
                     created_by=user_id)
             else:
-                if id is None:
-                    bucketlists = BucketList.query.filter_by(
-                        created_by=user_id)
-                    all_bucketlists = []
-                    if bucketlists:
-                        bucketlists_pagination = bucketlists.paginate(
-                            page, int(limit), False).items
-                        for bucketlist in bucketlists_pagination:
-                            obj = {
-                                'id': bucketlist.id,
-                                'name': bucketlist.name,
-                                'date_created': bucketlist.date_created,
-                                'date_modified': bucketlist.date_modified,
-                                'created_by': bucketlist.created_by
-                            }
-                            all_bucketlists.append(obj)
-                            response = jsonify(all_bucketlists)
-                    else:
-                        return{"message":
-                               "Bucketlist is Empty"}
-                # get the bucketlist specified in url <int:id>
-                else:
-                    bucketlist = BucketList.query.filter_by(
-                        id=id, created_by=user_id).first()
-                    if bucketlist:
-                        response = jsonify({
+                bucketlists = BucketList.query.filter_by(
+                    created_by=user_id)
+            if id is None:
+                all_bucketlists = []
+                if bucketlists:
+                    bucketlists_pagination = bucketlists.paginate(
+                        int(page), int(limit), False).items
+                    for bucketlist in bucketlists_pagination:
+                        obj = {
                             'id': bucketlist.id,
                             'name': bucketlist.name,
                             'date_created': bucketlist.date_created,
                             'date_modified': bucketlist.date_modified,
                             'created_by': bucketlist.created_by
-                        })
-                    else:
-                        response = {
-                            "message": "Bucketist is empty"
                         }
-                        return make_response(jsonify(response))
-                return make_response(response), 200
+                        all_bucketlists.append(obj)
+                        response = jsonify(all_bucketlists)
+                else:
+                    return{"message":
+                           "Bucketlist is Empty"}
+            # get the bucketlist specified in url <int:id>
+            else:
+                bucketlist = BucketList.query.filter_by(
+                    id=id, created_by=user_id).first()
+                if bucketlist:
+                    response = jsonify({
+                        'id': bucketlist.id,
+                        'name': bucketlist.name,
+                        'date_created': bucketlist.date_created,
+                        'date_modified': bucketlist.date_modified,
+                        'created_by': bucketlist.created_by
+                    })
+                else:
+                    response = {
+                        "message": "Bucketist is empty"
+                    }
+                    return make_response(jsonify(response))
+            return make_response(response), 200
         except Exception as e:
             response = {
                 'message': str(e)

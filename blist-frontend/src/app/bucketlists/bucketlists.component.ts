@@ -13,6 +13,7 @@ export class BucketlistsComponent implements OnInit {
   bucketlists;
   current_bucketlist;
   name;
+  search_phrase;
   edit = false;
 
   getBuckelists(){
@@ -53,6 +54,12 @@ export class BucketlistsComponent implements OnInit {
           // console.log(err)
 
       });;
+  }
+
+  searchBucketlist(){
+      this.restangular.all("bucketlists").customGET('', { q: this.search_phrase}).subscribe(resp => {
+          this.bucketlists = resp;
+      });
   }
 
   cancel() {

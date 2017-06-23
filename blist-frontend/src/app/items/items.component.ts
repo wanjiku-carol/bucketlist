@@ -18,6 +18,7 @@ export class ItemsComponent implements OnInit {
   done;
   edit = false;
   current_item;
+  search_phrase;
 
   getItems(bucketlist_id){
       let baseUrl = this.restangular.one('bucketlists', this.bucketlist_id).all('items');
@@ -78,7 +79,6 @@ export class ItemsComponent implements OnInit {
       localStorage.removeItem('auth_token');
       window.location.reload();
   }
-
 
   ngOnInit() {
       this.route.params.subscribe(params => {
