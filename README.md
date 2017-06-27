@@ -15,13 +15,19 @@ Install the requirements
 
 >pip install -r requirements.txt
 
-Initialize, migrate, upgrade the datatbase
+Initialize, migrate, upgrade the database
 
 >python manage.py db init
 
 >python manage.py db migrate
 
 >python manage.py db upgrade
+
+## Activate postgres server
+
+To activate the postgres server
+
+>pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start
 
 ## Launch the progam
 
@@ -50,6 +56,10 @@ Interact with the API, send http requests using Postman
 # Bucket List Front End
 
 ## Development server
+
+>cd bucketlist
+
+>cd blist-frontend
 
 Run `ng install` to install the dependencies.
 
