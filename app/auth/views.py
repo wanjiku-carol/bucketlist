@@ -99,16 +99,14 @@ class BucketlistView(MethodView):
     def delete(self, id, **kwargs):
         """Handles DELETE request to delete a bucketlist"""
         try:
-            # user_id = kwargs["user_id"]
             bucketlist = BucketList.query.filter_by(id=id).first()
             if not bucketlist:
                 abort(404)
             else:
                 bucketlist.delete()
-            return{"message":
-                   "bucketlist {} successfully deleted".format(
-                       bucketlist.id)}, 200
-            # raise HTTP 404 response if id not found
+                return{"message":
+                       "bucketlist {} successfully deleted".format(
+                           bucketlist.id)}, 200
         except Exception as e:
             response = {
                 'message': str(e)
@@ -173,6 +171,7 @@ class BucketlistView(MethodView):
                         }
                         all_bucketlists.append(obj)
                         response = jsonify(all_bucketlists)
+                        return make_response(response), 200
                 else:
                     return{"message":
                            "Bucketlist is Empty"}
@@ -188,12 +187,13 @@ class BucketlistView(MethodView):
                         'date_modified': bucketlist.date_modified,
                         'created_by': bucketlist.created_by
                     })
+                    return make_response(response), 200
                 else:
                     response = {
                         "message": "Bucketist is empty"
                     }
-                    return make_response(jsonify(response))
-            return make_response(response), 200
+                    return make_response(jsonify(response)), 404
+
         except Exception as e:
             response = {
                 'message': str(e)

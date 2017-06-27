@@ -93,11 +93,12 @@ class BucketlistTestCase(BaseTestCase):
             data={'name': 'Eat, pray and love'})
         self.assertEqual(res.status_code, 201)
         results = json.loads(res.data.decode())
-        # import pdb
-        # pdb.set_trace()
+
         resp = self.client.delete('/bucketlists/{}/'.format(results['id']),
                                   headers=dict(Authorization=access_token))
         self.assertEqual(resp.status_code, 200)
+        # import pdb
+        # pdb.set_trace()
         response = self.client.get('/bucketlists/{}/'.format(results['id']),
                                    headers=dict(Authorization=access_token))
         self.assertEqual(response.status_code, 404)

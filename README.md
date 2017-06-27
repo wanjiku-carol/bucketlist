@@ -18,7 +18,9 @@ Install the requirements
 Initialize, migrate, upgrade the datatbase
 
 >python manage.py db init
+
 >python manage.py db migrate
+
 >python manage.py db upgrade
 
 ## Launch the progam
