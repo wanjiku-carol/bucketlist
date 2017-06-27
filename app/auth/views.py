@@ -170,8 +170,8 @@ class BucketlistView(MethodView):
                             'created_by': bucketlist.created_by
                         }
                         all_bucketlists.append(obj)
-                        response = jsonify(all_bucketlists)
-                        return make_response(response), 200
+                    response = jsonify(all_bucketlists)
+                    return make_response(response), 200
                 else:
                     return{"message":
                            "Bucketlist is Empty"}

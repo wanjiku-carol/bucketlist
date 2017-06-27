@@ -28,7 +28,7 @@ export class AppComponent implements OnInit{
         this.loggedIn = !!localStorage.getItem('auth_token')
     }
     loginUser(){
-        let baseUrl = this.restangular.all('auth/login');
+        let baseUrl = this.restangular.all('auth/login/');
         let addAccount = baseUrl.post({'email':this.login_email,'password':this.login_password})
         .subscribe(resp => {
             localStorage.setItem('auth_token', resp.access_token);
