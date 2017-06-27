@@ -23,6 +23,7 @@ export class AppComponent implements OnInit{
     reg_username;
     reg_email;
     reg_password;
+    reg_message;
 
     constructor( private restangular: Restangular, private router: Router ) {
         this.loggedIn = !!localStorage.getItem('auth_token')
@@ -45,7 +46,7 @@ export class AppComponent implements OnInit{
         let addAccount = baseUrl.post(
             { 'username': this.reg_username, 'email': this.reg_email, 'password':this.reg_password }
         ).subscribe(resp => {
-            alert(this.resp=resp.message);
+            this.reg_message = resp.message;
         }, err => {
             console.log(err.data.message)
             this.registerError = err.data.message;
@@ -69,8 +70,6 @@ export class AppComponent implements OnInit{
         this.showHeader = false;
         this.showRegister = true;
     }
-
-
 
     ngOnInit() {
         if(window.location.pathname === '/' && this.isLoggedIn()) {

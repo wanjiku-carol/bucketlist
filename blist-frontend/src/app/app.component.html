@@ -35,18 +35,7 @@
 
                         <h1>Bucketlist <span>App</span></h1>
                         <p>Do it and Cross it off the List!</p>
-
-                        <!-- <a target="_blank" href="#"><button class="btn btn-default btn-lg">Download</button></a> -->
                         <button class="btn login-btn btn-lg" (click)="displayLogin()">LOG IN</button>
-
-                        <!-- <div class="available">
-                            <p>
-                                Available on :
-                                <a href="#"><i class="fa fa-apple"></i></a>
-                                <a href="#"><i class="fa fa-android"></i></a>
-                            </p>
-                        </div> -->
-
                     </div>
                 </div>
             </div>
@@ -66,9 +55,6 @@
                     <div class="login-form-area">
                         <form>
                             <h3>Log In</h3>
-                            <!-- <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Your Name">
-                            </div> -->
 
                             <div class="form-group">
                                 <input name="login_email" type="email" class="form-control" [(ngModel)]="login_email" placeholder="Your Email">
@@ -78,10 +64,6 @@
                                 <input name="login_password" type="password" class="form-control" [(ngModel)]="login_password" placeholder="Your Password">
                             </div>
                             <div >{{ loginError }}</div>
-                            <!-- <div class="form-group">
-                                <textarea class="form-control" rows="7" placeholder="Message"></textarea>
-                            </div> -->
-
                             <button type="submit" (click) ="loginUser()" class="btn btn-primary login-btn">Login</button>
                         </form>
                     </div>
@@ -111,11 +93,7 @@
                                 <input name="reg_password" type="password" class="form-control" [(ngModel)]="reg_password" placeholder="Password">
                             </div>
                             <div >{{ registerError }}</div>
-
-                            <!-- <div class="form-group">
-                                <textarea class="form-control" rows="7" placeholder="Message"></textarea>
-                            </div> -->
-
+                            <div >{{ reg_message}}</div>
                             <button type="submit" (click) ="registerUser()" class="btn btn-primary login-btn">Register</button>
                         </form>
                     </div>
@@ -125,7 +103,3 @@
     </section>
 </div>
 <router-outlet *ngIf="isLoggedIn()"></router-outlet>
-
-<!-- <app-root *ngIf="!isLoggedIn()></app-root> -->
-
-<!-- <app-bucketlists *ngIf="isLoggedIn()></app-bucketlists> -->

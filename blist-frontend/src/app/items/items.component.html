@@ -13,10 +13,6 @@
                 <div class="form-group">
                     <input name="name" *ngIf="!edit" type="text" class="form-control" (keyup.enter)="addItems()" placeholder="Enter Item Name and Press Enter" [(ngModel)]="name">
                 </div>
-                <!-- <div class="form-group">
-                    <label for="done">Done</label>
-                    <input name="done" default="False" type="checkbox" [(ngModel)]="done">
-                </div> -->
             </form>
         </div>
         <div id="editModal" *ngIf="edit">

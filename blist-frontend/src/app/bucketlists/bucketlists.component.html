@@ -1,11 +1,8 @@
-
-
 <section id="gallery" class="sections">
     <div class="container text-center">
 
         <div class="heading-content">
             <h3>My Bucketlists</h3>
-            <!-- <h5>summarise what your product is all about </h5> -->
         </div>
         <form>
             <div class="col-md-offset-2 col-md-3 form-group">
@@ -38,10 +35,6 @@
                             <div class="modal-body">
                                 <input name="name" type="text" class="form-control" (keyup.enter)="saveBucketlist()" [(ngModel)]="name">
                             </div>
-                            <!-- <div class="form-group">
-                            <label for="done">Done</label>
-                            <input name="done" default="False" type="checkbox" [(ngModel)]="done">
-                        </div> -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-primary" (click)="saveBucketlist()">Save</button>
                             <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
@@ -75,10 +68,6 @@
         <div *ngIf="!bucketlists">
             <h2>You do not have any bucketlists</h2>
         </div>
-        <!-- <div *ngIf="!bucketlists">
-        <h2>You do not have any bucketlists</h2>
-    </div> -->
-
 
 </div>
 <pagination-controls (pageChange)="page = $event" id="1"

@@ -4,9 +4,7 @@ import { Router , ActivatedRoute} from '@angular/router';
 import * as moment from 'moment';
 
 @Component({
-  selector: 'app-items',
   templateUrl: './items.component.html',
-  styleUrls: ['./items.component.css']
 })
 export class ItemsComponent implements OnInit {
 
@@ -48,7 +46,6 @@ export class ItemsComponent implements OnInit {
           this.name = resp.name;
           this.done = resp.done;
       });
-      // window.location.reload();
   }
   saveItem(){
       this.current_item.name = this.name
