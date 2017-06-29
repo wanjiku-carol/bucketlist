@@ -11,9 +11,42 @@ Navigate to the root folder
 
 >cd bucketlist
 
+Create the virtual environment
+
+> mkvirtualenv blist-venv
+
+Activate the virtual environment
+
+>workon blist-venv
+
 Install the requirements
 
 >pip install -r requirements.txt
+
+## Set Up Environment
+
+Ensure that the app automatically sets up the environment variables to be used by adding them to the post-activate file of the virtual environment.
+Open the virtual environment post-activate file
+
+>atom $VIRTUAL_ENV/bin/postactivate
+
+Add the environment set up in the post-activate file. Add the postgres server activation in the set up as well.
+
+>pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start
+
+>export FLASK_APP="run.py"
+
+>export SECRET="b'\xf4u\x97\x1b\x9c\xf9\xe8\xff\xd8A\x92g\xaef\xea<\x9a>OBL\x9f\xb4q'"
+
+>export APP_SETTINGS="development"
+
+>export DATABASE_URL="postgresql://localhost/bucketlist_db"
+
+
+
+ Re-activate your virtual environment.
+
+ ## Run Database Migrations
 
 Initialize, migrate, upgrade the database
 
@@ -23,13 +56,8 @@ Initialize, migrate, upgrade the database
 
 >python manage.py db upgrade
 
-## Activate postgres server
 
-To activate the postgres server
-
->pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start
-
-## Launch the progam
+## Launch the Progam
 
 Run
 
@@ -52,6 +80,8 @@ Interact with the API, send http requests using Postman
 | `/bucketlists/<id>/items` | `POST` |  Create items in a bucketlist |
 | `/bucketlists/<id>/items/<item_id>` | `DELETE`| Delete an item in a bucketlist|
 | `/bucketlists/<id>/items/<item_id>` | `PUT`| update a bucketlist item details|
+
+Run the APIs on postman to ensure they are fully functioning.
 
 # Bucket List Front End
 
