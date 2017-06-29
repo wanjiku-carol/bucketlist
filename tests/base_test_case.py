@@ -10,10 +10,12 @@ class BaseTestCase(unittest.TestCase):
         self.app = create_app(config_name='testing')
         self.client = self.app.test_client()
         self.user_data = {
-            'username': 'Yohansen',
-            'email': 'yohansen@testemail.com',
-            'password': 'test_password'
+            "username": "Yohansen",
+            "email": "yohansen@testemail.com",
+            "password": "test_password"
         }
+        self.user_login = {"email": "yohansen@testemail.com",
+                           "password": "test_password"}
         self.bucketlist = {'name': 'Adventures'}
         self.item = {
             'name': 'Rock Climbing',
