@@ -3,9 +3,7 @@ import { RestangularModule, Restangular } from 'ngx-restangular';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-bucketlists',
   templateUrl: './bucketlists.component.html',
-  styleUrls: ['./bucketlists.component.css']
 })
 export class BucketlistsComponent implements OnInit {
 
@@ -42,7 +40,6 @@ export class BucketlistsComponent implements OnInit {
       this.current_bucketlist.get().subscribe(resp => {
           this.name = resp.name;
       });
-      // window.location.reload();
   }
   saveBucketlist(){
       this.current_bucketlist.name = this.name
@@ -51,7 +48,6 @@ export class BucketlistsComponent implements OnInit {
           this.name = '';
           this.edit = false;
       }, function(err) {
-          // console.log(err)
 
       });;
   }
