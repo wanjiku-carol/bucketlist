@@ -1,6 +1,6 @@
 # BucketList Application API
 
-[![CircleCI](https://circleci.com/gh/wanjiku-carol/bucketlist.svg?style=svg)](https://circleci.com/gh/wanjiku-carol/bucketlist)
+[![Build Status](https://travis-ci.org/wanjiku-carol/bucketlist.svg?branch=master)](https://travis-ci.org/wanjiku-carol/bucketlist)
 
 According to Merriam-Webster Dictionary, a Bucket List is a list of things that one has not done before but wants to do before dying.
 
