@@ -35,7 +35,7 @@ gunicorn==19.6.0
 haikunator==2.1.0
 itsdangerous==0.24
 Jinja2==2.9.6
-lxml==3.6.4
+lxml==4.6.2
 Mako==1.0.6
 MarkupSafe==1.0
 mccabe==0.6.1
